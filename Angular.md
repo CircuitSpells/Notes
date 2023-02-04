@@ -1,18 +1,67 @@
 # Angular Notes
 
 - [Angular Notes](#angular-notes)
-  - [Misc](#misc)
+  - [Definitions and Common Use Cases](#definitions-and-common-use-cases)
   - [Routing](#routing)
   - [Modules](#modules)
   - [Angular CLI](#angular-cli)
 
 ---
-## Misc
+## Definitions and Common Use Cases
 - index.html is the "Single Page" in "SPA".
   
-- The `@function({...})` above a class is called a <ins>decorator</ins>, you can think of it like a C# attribute that takes in an object.
+- The function prefixed with an `@` symbol above a class, method, or variable is called a <ins>decorator</ins>. You can think of it like a C# attribute:
+```ts
+@Component({ ... })
+export class ExampleComponent {
+    @Input foo: number;
+}
+```
 
-- The <ins>selector</ins> in the `@Component` decorator is used as an html <ins>element</ins> tag, called a <ins>directive</ins> in that context. The Angular <ins>module</ins> that owns the component that is calling the selector / directive must contain the selectors component class in the module's `declarations` array, OR import the module which references the selector.
+
+- The <ins>selector</ins> field in the `@Component` <ins>decorator</ins> is the html <ins>element</ins> for that Component (called a <ins>directive</ins> in that context):
+```ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-example-component',
+  templateUrl: './example-component.html',
+  styleUrls: ['./example-component.css']
+})
+export class ExampleComponent { ... }
+```
+
+The above's parent component could then insert the <ins>directive</ins> in the parent html file:
+```html
+<app-example-component></app-example-component>
+```
+
+The Angular <ins>module</ins> that owns the parent component must contain the child's component class in the <ins>module</ins>'s `declarations` array:
+```ts
+import { NgModule } from '@angular/core';
+
+@NgModule({
+  providers:    [ ... ],
+  declarations: [ ExampleComponent ],
+  bootstrap:    [ ... ]
+})
+export class AppModule { }
+```
+
+OR import the <ins>module</ins> which references the <ins>selector</ins>:
+```ts
+import { NgModule } from '@angular/core';
+import { ExampleComponent } from '/path/to/ExampleComponent.ts';
+
+@NgModule({
+  imports:      [ ExampleComponent ],
+  providers:    [ ... ],
+  declarations: [ ... ],
+  bootstrap:    [ ... ]
+})
+export class AppModule { }
+```
+
 
 - To specify a custom prefix for selectors when creating a new app:
 ```console
