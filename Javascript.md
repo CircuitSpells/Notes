@@ -1,16 +1,74 @@
-# Javascript Notes
+# JavaScript Tutorial
 
-# ES2015 (aka ES6)
+---
+## Classes
 
-- `let` and `const` have been added to replace `var`.
-- Class syntax:
+Class syntax:
 ```js
 class Car {
-  constructor(name, year) {
-    this.name = name;
+  constructor(name, year) { // note the constructor is named "constructor()"
+    this.name = name; // note that "this" here declares variables automatically
     this.year = year;
   }
+
+  method_1() { ... }
+
+  method_2() { ... }
 }
 
 let myCar = new("Toyota", 2005);
+```
+
+---
+## Modules
+
+JavaScript modules allow you to break up your code into separate files. Modules are made viewable to other files with the `export` statement, and imported from external files with the `import` statement.
+
+### Exports
+
+Named Export:
+```js
+export const name = "John";
+export const age = 99;
+```
+or
+```js
+const name = "John";
+const age = 99;
+export {name, age};
+```
+
+Default Export (only one allowed per file):
+```js
+const info = () => {
+    const name = "John";
+    const age = 99;
+    return name + ' is ' + age + ' years old.';
+}
+
+export default info; // note the "default" keyword
+```
+
+### Imports
+
+Import from named export:
+```js
+import { name, age } from "./example.js";
+```
+
+Import from default export:
+```js
+import info from "./example.js";
+```
+
+Import from `<script>` tag (note the `type` attribute):
+```js
+<script type="module">import message from "./example.js";</script>
+```
+
+## JSON
+
+JSON to JS object:
+```js
+const obj = JSON.parse(myJsonTextString);
 ```
