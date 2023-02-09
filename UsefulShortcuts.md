@@ -1,0 +1,39 @@
+# Useful Shortcuts
+
+- [Useful Shortcuts](#useful-shortcuts)
+  - [VS Code](#vs-code)
+    - [Emmet](#emmet)
+    - [Other Shortcuts](#other-shortcuts)
+
+## <h1 style="text-align: center;">VS Code</h1>
+
+### <h1>Emmet</h1>
+
+Emmet is a very powerful tool to quickly build blocks of html and css. Check the [Emmet cheat sheet](https://docs.emmet.io/cheat-sheet/) for more info.
+
+Type the following:
+```txt
+ul#my-id.my-class[someAttribute=someValue]>li#li-id$.class1.class2{some content}*3
+```
+
+Result:
+```html
+<ul id="my-id" class="my-class" someAttribute="someValue">
+    <li id="li-id1" class="class1 class2">some content</li>
+    <li id="li-id2" class="class1 class2">some content</li>
+    <li id="li-id3" class="class1 class2">some content</li>
+</ul>
+```
+
+To wrap an html block in another tag (or any emmet-defined syntax):
+1. `ctrl+shift+p`
+2. Select `Emmet: Wrap with Abbreviation`
+3. Enter a tag, e.g. `div` (Note: continuing the emmet chain without specifying a tag defaults to a `div`, e.g. `.wrapper>p`)
+4. Hit `enter`
+
+### <h1>Other Shortcuts</h1>
+
+- Auto format html: `shift+alt+f`
+<br>Note: this seems to auto rename your favicon file reference to `favicon.ico`.
+
+- Go to file: `ctrl+p`
