@@ -13,12 +13,12 @@ Emmet is a very powerful tool to quickly build blocks of html and css. Check the
 
 Type the following:
 ```txt
-ul#my-id.my-class[someAttribute=someValue]>li#li-id$.class1.class2{some content}*3
+ul#my-id.my-class[some-attribute=some-value]>li#li-id$.class1.class2{some content}*3
 ```
 
 Result:
 ```html
-<ul id="my-id" class="my-class" someAttribute="someValue">
+<ul id="my-id" class="my-class" some-attribute="some-value">
     <li id="li-id1" class="class1 class2">some content</li>
     <li id="li-id2" class="class1 class2">some content</li>
     <li id="li-id3" class="class1 class2">some content</li>
