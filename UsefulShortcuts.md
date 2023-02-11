@@ -15,6 +15,7 @@ Type the following:
 ```txt
 ul#my-id.my-class[some-attribute=some-value]>li#li-id$.class1.class2{some content}*3
 ```
+Note: Where your cursor is when you hit `enter` matters. Make sure the cursor is at the end of the line.
 
 Result:
 ```html
