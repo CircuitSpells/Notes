@@ -24,7 +24,7 @@ Continuous-to-discrete signal conversion is governed by the Nyquist Shannon Samp
 
 This theorem states we need at least *more than* 2 samples to capture one period of a wave. Note that only capturing 2 samples per period could potentially capture the null points of the wave (each sample point would have an amplitude of zero), and therefore would insufficiently represent the wave's frequency.
 
-Consider a 1hz frequency. Using a sample rate of 3hz, we would capture 3 samples per period. Intuitively 3 samples a period may not seem like much, but in reality to increase the sample rate would not yield higher resolution. That is, as long as you take into account the first point of the theorem: the signal must be **band limited**.
+Consider a 1hz frequency. Using a sample rate of 3hz, we would capture 3 samples per period. Intuitively, 3 samples per period may not seem like much, but in reality *to increase the sample rate would not yield a higher resolution*. That is, as long as you take into account the first point of the theorem: the signal must be **band limited**.
 
 Band limiting is the limiting of a signal's frequency domain representation to zero above a certain finite frequency. You can consider this to be like a theoretical low pass filter with infinite slope.
 
