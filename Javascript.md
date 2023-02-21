@@ -70,5 +70,10 @@ Import from `<script>` tag (note the `type` attribute):
 
 JSON to JS object:
 ```js
-const obj = JSON.parse(myJsonTextString);
+const myObj = JSON.parse(myJsonTextString);
+```
+
+JS object to JSON:
+```js
+string json = JSON.stringify(myObj);
 ```
