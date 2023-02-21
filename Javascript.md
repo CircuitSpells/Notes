@@ -66,6 +66,7 @@ Import from `<script>` tag (note the `type` attribute):
 <script type="module">import message from "./example.js";</script>
 ```
 
+---
 ## JSON
 
 JSON to JS object:
@@ -75,5 +76,16 @@ const myObj = JSON.parse(myJsonTextString);
 
 JS object to JSON:
 ```js
-string json = JSON.stringify(myObj);
+const json = JSON.stringify(myObj);
+```
+
+---
+## Event Listeners
+
+Event listeners allow you to trigger a method when a specific event occurs on an element. The below event listener listens for a click event:
+
+```js
+document.getElementById('my-element').addEventListener('click', () => {
+    // do something
+});
 ```
