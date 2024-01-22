@@ -392,7 +392,7 @@ var rowCount = await _context.Books
 
 Simple logging:
 ```C#
-optionsBuilder.LotTo(Console.WriteLine);
+optionsBuilder.LogTo(Console.WriteLine);
 ```
 
 ASP.NET Core appsettings.json (and via AddDbContext):
