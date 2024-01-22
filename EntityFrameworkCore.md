@@ -1,6 +1,6 @@
 # Entity Framework Core
 
-### Setup
+## Setup
 
 Simple model class:
 ```C#
@@ -117,7 +117,7 @@ public class Book
 
 EF Core infers the Many-to-Many relationship here, and automatically creates a join table under the hood.
 
-### Execution
+## Execution
 
 EF Core has an extension of LINQ that allows for querying the database. Here is a simple query:
 ```C#
@@ -218,7 +218,7 @@ Author2
 { Author2, Book5 }
 ```
 
-### Change Tracking
+## Change Tracking
 
 EF Core uses "change tracking" to maintain details of the state of each object that it is aware of. EF Core then uses this tracking information construct `INSERT`, `UPDATE`, and `DELETE` statements to send to the database.
 
@@ -331,7 +331,7 @@ EF's other complex mapping capabilities:
 - Define mapping relationships solely in DbContext for when there are more complex scenarios than the 1-to-Many and Many-to-Many defaults
 - Bulk configurations. For example, if you need to apply the same mapping across all entities in your data model (e.g. overriding all strings to map to `varchar(100)`)
 
-### Using Your Own SQL
+## Using Your Own SQL
 
 EF can call views (which can be generated based off of your model classes) and stored procedures.
 
@@ -367,7 +367,7 @@ var rowCount = await _context.Books
     .ExecuteUpdateAsync(s => s.SetProperty(b => b.Price, 1.50));
 ```
 
-### Performance
+## Performance
 
 - Remove tracking from entities when not needed
 - Synchronous database operations cause blocking
@@ -378,7 +378,7 @@ var rowCount = await _context.Books
   - Debugging performance issues
   - Etc
 
-### Logging
+## Logging
 
 Simple logging:
 ```C#
@@ -428,7 +428,7 @@ Tap into EF Core pipeline
         - Creating and using savepoints
         - Transaction failures
 
-### Handling Database Connections and Transactions
+## Handling Database Connections and Transactions
 
 - EF will auto retry a connection or command to a database depending on the error code returned by the database.
 - If `SaveChanges()` is sending multiple commands, they will always be wrapped in a transaction, and rolled back on any failure.
