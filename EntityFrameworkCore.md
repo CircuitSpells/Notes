@@ -2,7 +2,7 @@
 
 ### Setup
 
-Simple class:
+Simple model class:
 ```C#
 public class Author
 {
