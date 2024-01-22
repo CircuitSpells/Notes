@@ -1,5 +1,15 @@
 # Entity Framework Core
 
+- [Entity Framework Core](#entity-framework-core)
+  - [Setup](#setup)
+  - [Execution](#execution)
+  - [Change Tracking](#change-tracking)
+  - [Applying Mappings](#applying-mappings)
+  - [Using Your Own SQL](#using-your-own-sql)
+  - [Performance](#performance)
+  - [Logging](#logging)
+  - [Handling Database Connections and Transactions](#handling-database-connections-and-transactions)
+
 ## Setup
 
 Simple model class:
