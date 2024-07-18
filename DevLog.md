@@ -1,5 +1,26 @@
 # DevLog
 
+## PowerShell Policies
+
+7/18/24
+
+```pwsh
+Set-ExecutionPolicy Restricted # Will not allow any powershell scripts to run.  Only individual commands may be run.
+
+Set-ExecutionPolicy AllSigned # Will allow signed powershell scripts to run.
+
+Set-ExecutionPolicy RemoteSigned # Allows unsigned local script and signed remote powershell scripts to run.
+
+Set-ExecutionPolicy Unrestricted # Will allow unsigned powershell scripts to run.  Warns before running downloaded scripts.
+
+Set-ExecutionPolicy Bypass # Nothing is blocked and there are no warnings or prompts.
+```
+
+To change the policy only in the current session:
+```pwsh
+Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
+```
+
 ## Fluent Libraries
 
 7/17/24
