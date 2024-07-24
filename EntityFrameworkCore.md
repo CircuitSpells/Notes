@@ -177,6 +177,7 @@ Where()
 OrderBy()
 Skip()
 Take() // Skip + Take for paging
+Include()
 Join()
 GroupJoin()
 GroupBy()
@@ -187,6 +188,7 @@ SelectMany()
 Execution methods (all with Async counterparts, which you should be using):
 ```C#
 ToList()
+AsEnumerable()
 First()
 FirstOrDefault()
 Single()
@@ -199,7 +201,6 @@ Min()
 Max()
 Average()
 Sum()
-AsEnumerable()
 
 // new as of EF 7
 ExecuteUpdate()
