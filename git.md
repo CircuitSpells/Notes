@@ -43,6 +43,9 @@ see recent commits:
 see a compact view of past commits:
 `git log --oneline`
 
+see the commit history for a single file:
+`git log -- <file-name>`
+
 show what changed in a specific commit:
 `git show <commit-id>`
 
