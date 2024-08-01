@@ -52,6 +52,9 @@ show what changed in a specific commit:
 diff between main and your feature branch:
 `git diff <main-branch>..<feature-branch> -- <directory-or-file-path>`
 
+checkout a specific commit:
+`git checkout <commit-hash>`
+
 reset directory or file to match the main branch:
 `git checkout <main-branch> -- <directory-or-file-path>`
 
