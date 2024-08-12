@@ -21,11 +21,14 @@ view local and remote branches:
 push current branch and set remote as upstream:
 `git push --set-upstream origin <branch-name>`
 
-unstage a file:
-`git restore --staged <path-to-file>`
+unstage files:
+`git restore --staged <directory-or-file-path>`
 
-undo changes to an unstaged file:
-`git restore <path-to-file>`
+discard changes to unstaged files:
+`git restore <directory-or-file-path>`
+
+reset files to match the main branch:
+`git checkout <main-branch> -- <directory-or-file-path>`
 
 view diff of a file:
 `git diff <path-to-file>`
@@ -54,9 +57,6 @@ diff between main and your feature branch:
 
 checkout a specific commit:
 `git checkout <commit-hash>`
-
-reset directory or file to match the main branch:
-`git checkout <main-branch> -- <directory-or-file-path>`
 
 merge feature branch into main:
 `git switch main`
