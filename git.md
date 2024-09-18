@@ -53,7 +53,12 @@ show what changed in a specific commit:
 `git show <commit-id>`
 
 diff between main and your feature branch:
-`git diff <main-branch>..<feature-branch> -- <directory-or-file-path>`
+`git diff <main-branch>..<feature-branch>`
+or `git diff <main-branch>..<feature-branch> -- <directory-or-file-path>`
+
+diff between main branch and feature branch, but only compare the tip commits between both branches (note the three dots `...`):
+`git diff <main-branch>...<feature-branch>`
+or `git diff <main-branch>...<feature-branch> -- <directory-or-file-path>`
 
 checkout a specific commit:
 `git checkout <commit-hash>`
