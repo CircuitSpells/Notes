@@ -49,6 +49,12 @@ see a compact view of past commits:
 see the commit history for a single file:
 `git log -- <file-name>`
 
+view all commits since the feature branch branched from main:
+`git log <main-branch>..<feature-branch>`
+
+search commits that contain a commit message (useful with conventional commits), such as "feat:":
+`git log --grep='^feat:' --since="1 month ago" --oneline --regexp-ignore-case`
+
 show what changed in a specific commit:
 `git show <commit-id>`
 
@@ -80,9 +86,6 @@ where N is the number of commits, e.g.: `git reset --hard HEAD~1`
 undo the last N commits, but keep the changes from the undone commits in the staging area:
 `git reset --soft HEAD~<N>`
 where N is the number of commits, e.g.: `git reset --soft HEAD~1`
-
-search commits that contain a commit message (useful with conventional commits), such as "feat:":
-`git log --grep='^feat:' --since="1 month ago" --oneline --regexp-ignore-case`
 
 get current git username and email:
 `git config --get user.email`
