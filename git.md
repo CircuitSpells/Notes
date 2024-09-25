@@ -8,11 +8,17 @@ start a new local repo:
 create a new branch based on master:
 `git switch -c <new-branch-name>`
 
-delete local branch that has not been pushed yet:
+create a new branch without switching to it:
+`git branch <branch-name>`
+
+pull down a branch from origin without switching to it:
+`git fetch origin <branch-name>`
+
+delete local branch that has not been pushed to remote:
 `git branch -D <branch-name>`
 (`-D` is short for `--delete --force`)
 
-delete local branch that has been pushed:
+delete local branch that has been pushed to remote:
 `git branch -d <branch-name>`
 
 view local and remote branches:
@@ -20,6 +26,9 @@ view local and remote branches:
 
 push current branch and set remote as upstream:
 `git push --set-upstream origin <branch-name>`
+
+see which local branches are tracking a remote branch:
+`git branch -vv`
 
 unstage files:
 `git restore --staged <directory-or-file-path>`
