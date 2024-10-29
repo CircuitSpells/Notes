@@ -30,6 +30,10 @@ push current branch and set remote as upstream:
 see which local branches are tracking a remote branch:
 `git branch -vv`
 
+switch to a branch that only exists on origin:
+`git fetch`
+`git switch -c <local-branch-name> --track origin/<branch-name>`
+
 unstage files:
 `git restore --staged <directory-or-file-path>`
 
@@ -103,6 +107,14 @@ get current git username and email:
 set local git username and email:
 `git config user.email "your.email@example.com"`
 `git config user.name "Your Name"`
+
+to cherry pick a commit switch to the branch that the commit will be applied to, then run:
+`git cherry-pick <commit-hash>`
+or for a range of commits:
+`git cherry-pick <start-commit-hash>^..<end-commit-hash>`
+(The ^ symbol after the start commit indicates that you want to include the start commit in the range. In the above example, both the start and end commits will be included)
+if the cherry-pick has merge conflicts, you can resolve them in VS Code or abort the changes:
+`git cherry-pick --abort`
 
 ## Advanced Operations
 
