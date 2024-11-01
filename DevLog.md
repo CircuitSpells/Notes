@@ -1,5 +1,14 @@
 # DevLog
 
+## Useful Tools
+
+11/1/24
+
+In addition to the [Fluent libraries](#fluent-libraries) mentioned below, here are some more useful tools:
+- [Bogus](https://github.com/bchavez/Bogus) (quickly create fake objects with realistic fake data)
+    - Advice: When using RuleFor() for a string, use `f.Random.Words()` instead of `f.Random.String()`. The latter generates random garbage text that sometimes has issues during json serialization/deserialization. The former generates a few random english words.
+- [WireMock](https://github.com/WireMock-Net/WireMock.Net) (mock external APIs in-box)
+
 ## PowerShell Policies
 
 7/18/24
