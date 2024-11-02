@@ -1,5 +1,31 @@
 # DevLog
 
+## AddSingleton, AddScoped, AddTransient
+
+11/1/24
+
+### AddSingleton
+
+Singleton services live for the lifetime of the application. They are instantiated upon the first request to the API unless you specify to immediately create them when adding the service. They are not thread-safe and can be accessed concurrently. They will not let go of memory unless explicitly told to. Make sure to design the service to be stateless or implement locks for shared resources. Do not inject scoped or transient services into the singleton.
+
+Common singleton services: loggers, database caching, configuration providers
+
+### AddScoped
+
+Scoped services last for the lifetime of a request, which is useful when a service is dependency injected in multiple classes such as the controller class and a service class. If said service has a state change in the controller, and again in a service called by the controller, they will be accessing the same service instance.
+
+Common scoped services: database contexts
+
+### AddTransient
+
+Transient services last for the lifetime of the service scope, similar to instantiating a new instance of a class. If two classes dependency inject the same transient service, they will be two separate instances.
+
+Common transient services: data processing, validators, HttpClient
+
+### Bonus: HttpClientFactory
+
+HttpClientFactory is a common service to create HttpClients in order to make http requests. The HttpClientFactory is a singleton, and the generated HttpClients are transient services. The HttpClientFactory does not need to be registered explicitly; instead, when you register the HttpClient, an HttpClientFactory singleton will be created if one doesn't already exist.
+
 ## Useful Tools
 
 11/1/24
