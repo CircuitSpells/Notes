@@ -116,6 +116,8 @@ or for a range of commits:
 if the cherry-pick has merge conflicts, you can resolve them in VS Code or abort the changes:
 `git cherry-pick --abort`
 
+retrieve dropped stash: https://stackoverflow.com/questions/65182172/visual-studio-undo-drop-stash
+
 ## Advanced Operations
 
 view the common ancestor node between two branches (for example, to see when a feature branch stemmed off of main):
