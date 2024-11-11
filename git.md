@@ -11,9 +11,6 @@ create a new branch based on master:
 create a new branch without switching to it:
 `git branch <branch-name>`
 
-pull down a branch from origin without switching to it:
-`git fetch origin <branch-name>`
-
 delete local branch that has not been pushed to remote:
 `git branch -D <branch-name>`
 (`-D` is short for `--delete --force`)
