@@ -116,7 +116,22 @@ or for a range of commits:
 if the cherry-pick has merge conflicts, you can resolve them in VS Code or abort the changes:
 `git cherry-pick --abort`
 
-retrieve dropped stash: https://stackoverflow.com/questions/65182172/visual-studio-undo-drop-stash
+To stash changes:
+- stash tracked/untracked, staged/unstaged files. All files will be stashed as unstaged. `-m "my message"` optional:
+`git stash -u -m "my message"`
+- stash tracked/untracked but don't stash staged:
+`git stash push -u --keep-index -m "my message"`
+- list stashes:
+`git stash list`
+- view stash contents (omit stash name to view `stash@{0}`):
+`git stash show -p "stash@{2}"`
+- apply a specific stash by index (omit stash name to apply `stash@{0}`):
+`git stash apply stash@{2}`
+- delete stash (omit stash name to delete `stash@{0}`):
+`git stash drop "stash@{2}"`
+- delete all stashes:
+`git stash clear`
+- retrieve dropped stash: https://stackoverflow.com/questions/65182172/visual-studio-undo-drop-stash
 
 ## Advanced Operations
 
