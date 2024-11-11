@@ -50,19 +50,18 @@ Note: git requires the program `less` to use diff. If it is not installed, run t
 view upstream branch:
 `git remote -v`
 
-see recent commits:
+git log:
+- see recent commits:
 `git log`
-
-see a compact view of past commits:
+- see a compact view of past commits:
 `git log --oneline`
-
-see the commit history for a single file:
+- see the commit history for a single file:
 `git log -- <file-name>`
-
-view all commits since the feature branch branched from main:
+- see all commits filtered by path:
+`git log -- <directory-path>`
+- view all commits since the feature branch branched from main:
 `git log <main-branch>..<feature-branch>`
-
-search commits that contain a commit message (useful with conventional commits), such as "feat:":
+- search commits that contain a commit message (useful with conventional commits), such as "feat:":
 `git log --grep='^feat:' --since="1 month ago" --oneline --regexp-ignore-case`
 
 show what changed in a specific commit:
