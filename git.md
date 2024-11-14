@@ -1,6 +1,6 @@
 # Git
 
-## Common CLI Operations
+## Basic CLI Operations
 
 ### git init
 
@@ -10,6 +10,11 @@ git init
 ```
 
 ### git switch
+
+switch to existing branch:
+```
+git switch <branch-name>
+```
 
 create a new branch based on the current branch:
 ```
@@ -27,15 +32,86 @@ switch to a commit:
 git switch --detach <commit-hash>
 ```
 
+### git add
+
+stage files:
+```
+git add <directory-or-file-path>
+```
+
+stage multiple files:
+```
+git add <file1> <file2> <file3>
+```
+
+### git restore
+
+unstage files:
+```
+git restore --staged <directory-or-file-path>
+```
+
+discard changes to unstaged files:
+```
+git restore <directory-or-file-path>
+```
+
+### git checkout
+
+reset files to match the main branch:
+```
+git checkout <main-branch> -- <directory-or-file-path>
+```
+
+### git status
+
+see tracked/untracked and staged/unstaged files:
+```
+git status
+```
+
+### git commit
+
+commit staged files to local branch:
+```
+git commit -m "commit message"
+```
+
 ### git push
+
+push to local branch:
+```
+git push
+```
 
 push current branch and set remote as upstream:
 ```
 git push --set-upstream origin <branch-name>
 ```
 
+### git pull
+
+pull remote changes into your local branch:
+```
+git pull
+```
 
 ### git branch
+
+view local branches:
+```
+git branch
+```
+
+view remote branches:
+```
+git branch -r
+```
+
+view local and remote branches:
+```
+git branch -a
+```
 
 create a new branch without switching to it:
 ```
@@ -52,11 +128,6 @@ delete local branch that has been pushed to remote:
 git branch -d <branch-name>
 ```
 
-view local and remote branches:
-```
-git branch -a
-```
-
 see which local branches are tracking a remote branch:
 ```
 git branch -vv
@@ -66,30 +137,18 @@ see which branches contain a specific commit:
 ```
 git branch --contains <commit-hash>
 ```
-> add `-r` after `branch` to list remote branches or `-a` for both local and remote
+> note: add `-r` after `branch` to list remote branches or `-a` for both local and remote
 
-### git checkout
+### git remote
 
-reset files to match the main branch:
+view upstream branch:
 ```
-git checkout <main-branch> -- <directory-or-file-path>
-```
-
-### git restore
-
-unstage files:
-```
-git restore --staged <directory-or-file-path>
-```
-
-discard changes to unstaged files:
-```
-git restore <directory-or-file-path>
+git remote -v
 ```
 
 ### git diff
 
-> Note: git requires the program `less` to use diff. If it is not installed, run the following, then close and reopen the terminal so that it references the updated PATH:
+> note: git requires the program `less` to use diff. If it is not installed, run the following, then close and reopen the terminal so that it references the updated PATH:
 > ```
 > winget install jftuga.less
 > ```
@@ -99,14 +158,9 @@ view diff of a file:
 git diff <path-to-file>
 ```
 
-or to see diff of all files:
+view diff of all files:
 ```
 git diff .
-```
-
-view upstream branch:
-```
-git remote -v
 ```
 
 diff between main and your feature branch:
@@ -136,12 +190,12 @@ git diff <main-branch>...<feature-branch> -- <directory-or-file-path>
 git log
 ```
 
-- see a compact view of past commits:
+- see a compact view of recent commits:
 ```
 git log --oneline
 ```
 
-- see the commit history for a single file:
+- see the commit history of a file:
 ```
 git log -- <file-name>
 ```
@@ -176,14 +230,14 @@ git switch main
 git pull
 git merge <feature-branch>
 ```
-- or, optionally:
-```
-git merge --squash <feature-branch>
-```
+> - or, optionally:
+> ```
+> git merge --squash <feature-branch>
+> ```
 
 ### git reset
 
-- abort a merge in progress / permanently remove all uncommitted changes:
+- abort a merge in progress and permanently remove all uncommitted changes:
 ```
 git reset --hard HEAD
 ```
@@ -230,18 +284,18 @@ git config user.name "Your Name"
 
 ### git cherry-pick
 
-- to cherry pick a commit switch to the branch that the commit will be applied to, then run:
+- to cherry pick a commit, switch to the branch that the commit will be added to and then run:
 ```
 git cherry-pick <commit-hash>
 ```
 
-- or for a range of commits:
+- cherry pick a range of commits:
 ```
 git cherry-pick <start-commit-hash>^..<end-commit-hash>
 ```
 > The ^ symbol after the start commit indicates that you want to include the start commit in the range. In the above example, both the start and end commits will be included
 
-- if the cherry-pick has merge conflicts, you can resolve them in VS Code or abort the changes:
+- if the cherry-pick has merge conflicts, you can resolve them in a text editor or abort the changes:
 ```
 git cherry-pick --abort
 ```
@@ -289,7 +343,7 @@ git stash clear
 
 ### View Common Ancestor Commit
 
-view the common ancestor commit between two branches (for example, to see when a feature branch stemmed off of main):
+view the common ancestor commit between two branches (i.e. when a feature branch forked from main):
 - find the common ancestor commit id:
 ```
 git merge-base branch1 branch2
@@ -301,7 +355,7 @@ git show <commit-id>
 
 ### Undo Accidental Commit to Main
 
-if you accidentally made a commit to local main (but haven't pushed), you can move that commit to a new feature branch:
+if you accidentally made a commit to local main (but haven't pushed), then you can move that commit to a new feature branch:
 - find the commit hash of your commit and copy it:
 ```
 git log --oneline
@@ -321,13 +375,14 @@ git switch <feature-branch-name>
 
 ### Continue Work on Pending Changes in PR
 
-how to handle needing changes on a branch that is currently stuck in a PR:
-- If branch FeatureA is stuck in a PR, create branch FeatureB off of branch FeatureA that you will continue development on:
+when you start a new branch, sometimes you depend on changes that are currently on another branch that is stuck in a PR. You can use the initial branch's commits to develop off of and then cherry pick the new commits afterward to keep things clean:
+- If branch FeatureA is stuck in a PR, create branch FeatureB off of branch FeatureA:
 ```
 git switch FeatureA
+git pull
 git switch -c FeatureB
 ```
-- the following assumes that the PR for FeatureA has completed at this point. when finished making changes on branch FeatureB or whenever you'd like to resync main, pull latest:
+- the following assumes that the PR for FeatureA has completed at this point. when finished making changes on branch FeatureB or whenever you'd like to resync main into FeatureB, pull latest:
 ```
 git switch main
 git pull
