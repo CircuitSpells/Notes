@@ -4,179 +4,359 @@
 
 ### git init
 
-- start a new local repo:
-`git init`
+start a new local repo:
+```
+git init
+```
 
 ### git switch
 
-- create a new branch based on master:
-`git switch -c <new-branch-name>`
-- switch to a branch that only exists on origin:
-`git fetch`
-`git switch -c <local-branch-name> --track origin/<branch-name>`
-- switch to a commit:
-`git switch --detach <commit-hash>`
+create a new branch based on master:
+```
+git switch -c <new-branch-name>
+```
+
+switch to a branch that only exists on origin:
+```
+git fetch
+git switch -c <local-branch-name> --track origin/<branch-name>
+```
+
+switch to a commit:
+```
+git switch --detach <commit-hash>
+```
+
+## git push
+
+push current branch and set remote as upstream:
+```
+git push --set-upstream origin <branch-name>
+```
+
 
 ### git branch
 
-- create a new branch without switching to it:
-`git branch <branch-name>`
-- delete local branch that has not been pushed to remote:
-`git branch -D <branch-name>`
-(`-D` is short for `--delete --force`)
-- delete local branch that has been pushed to remote:
-`git branch -d <branch-name>`
-- view local and remote branches:
-`git branch -a`
-- push current branch and set remote as upstream:
-`git push --set-upstream origin <branch-name>`
-- see which local branches are tracking a remote branch:
-`git branch -vv`
+create a new branch without switching to it:
+```
+git branch <branch-name>
+```
+
+delete local branch that has not been pushed to remote (`-D` is short for `--delete --force`):
+```
+git branch -D <branch-name>
+```
+
+delete local branch that has been pushed to remote:
+```
+git branch -d <branch-name>
+```
+
+view local and remote branches:
+```
+git branch -a
+```
+
+see which local branches are tracking a remote branch:
+```
+git branch -vv
+```
+
+see which branches contain a specific commit:
+```
+git branch --contains <commit-hash>
+```
+> add `-r` after `branch` to list remote branches or `-a` for both local and remote
 
 ### git checkout
 
-- reset files to match the main branch:
-`git checkout <main-branch> -- <directory-or-file-path>`
-- checkout a specific commit:
-`git checkout <commit-hash>`
+reset files to match the main branch:
+```
+git checkout <main-branch> -- <directory-or-file-path>
+```
+
+checkout a specific commit:
+```
+git checkout <commit-hash>
+```
 
 ### git restore
 
-- unstage files:
-`git restore --staged <directory-or-file-path>`
-- discard changes to unstaged files:
-`git restore <directory-or-file-path>`
+unstage files:
+```
+git restore --staged <directory-or-file-path>
+```
+
+discard changes to unstaged files:
+```
+git restore <directory-or-file-path>
+```
 
 ### git diff
 
-- view diff of a file:
-`git diff <path-to-file>`
-- or to see diff of all files:
-`git diff .`
-    - Note: git requires the program `less` to use diff. If it is not installed, run the following, then close and reopen the terminal so that it references the updated PATH:
-`winget install jftuga.less`
-- view upstream branch:
-`git remote -v`
-- diff between main and your feature branch:
-`git diff <main-branch>..<feature-branch>`
-- diff between main and your feature branch (specify path): `git diff <main-branch>..<feature-branch> -- <directory-or-file-path>`
-- diff between main branch and feature branch, but only compare the tip commits between both branches (note the three dots `...`):
-`git diff <main-branch>...<feature-branch>`
-- same as above but also specify path:
-`git diff <main-branch>...<feature-branch> -- <directory-or-file-path>`
+> Note: git requires the program `less` to use diff. If it is not installed, run the following, then close and reopen the terminal so that it references the updated PATH:
+> ```
+> winget install jftuga.less
+> ```
+
+view diff of a file:
+```
+git diff <path-to-file>
+```
+
+or to see diff of all files:
+```
+git diff .
+```
+
+view upstream branch:
+```
+git remote -v
+```
+
+diff between main and your feature branch:
+```
+git diff <main-branch>..<feature-branch>
+```
+
+diff between main and your feature branch (specify path):
+```
+git diff <main-branch>..<feature-branch> -- <directory-or-file-path>
+```
+
+diff between main branch and feature branch, but only compare the tip commits between both branches (note the three dots `...`):
+```
+git diff <main-branch>...<feature-branch>
+```
+
+same as above but also specify path:
+```
+git diff <main-branch>...<feature-branch> -- <directory-or-file-path>
+```
 
 ### git log
 
 - see recent commits:
-`git log`
+```
+git log
+```
+
 - see a compact view of past commits:
-`git log --oneline`
+```
+git log --oneline
+```
+
 - see the commit history for a single file:
-`git log -- <file-name>`
+```
+git log -- <file-name>
+```
+
 - see all commits filtered by path:
-`git log -- <directory-path>`
+```
+git log -- <directory-path>
+```
+
 - view all commits since the feature branch branched from main:
-`git log <main-branch>..<feature-branch>`
+```
+git log <main-branch>..<feature-branch>
+```
+
 - search commits that contain a commit message (useful with conventional commits), such as "feat:":
-`git log --grep='^feat:' --since="1 month ago" --oneline --regexp-ignore-case`
+```
+git log --grep='^feat:' --since="1 month ago" --oneline --regexp-ignore-case
+```
 
 ### git show
 
 - show what changed in a specific commit:
-`git show <commit-id>`
+```
+git show <commit-id>
+```
 
 ### git merge
 
 - merge feature branch into main:
-`git switch main`
-`git pull`
-`git merge <feature-branch>`
-- or, optionally: `git merge --squash <feature-branch>`
-`git commit -m "merged feature branch into main"`
+```
+git switch main
+git pull
+git merge <feature-branch>
+```
+- or, optionally:
+```
+git merge --squash <feature-branch>
+```
 
 ### git reset
 
 - abort a merge in progress / permanently remove all uncommitted changes:
-`git reset --hard HEAD`
+```
+git reset --hard HEAD
+```
+
 - undo and delete the last N commits:
-`git reset --hard HEAD~<N>`
-where N is the number of commits, e.g.: `git reset --hard HEAD~1`
+```
+git reset --hard HEAD~<N>
+```
+> where N is the number of commits, e.g.:
+> ```
+> git reset --hard HEAD~1
+> ```
+
 - undo the last N commits, but keep the changes from the undone commits in the staging area:
-`git reset --soft HEAD~<N>`
-where N is the number of commits, e.g.: `git reset --soft HEAD~1`
+```
+git reset --soft HEAD~<N>
+```
+> - where N is the number of commits, e.g.:
+> ```
+> git reset --soft HEAD~1
+> ```
 
 ### git config
 
-- get current git username and email:
-`git config --get user.email`
-`git config --get user.name`
-- set local git username and email:
-`git config user.email "your.email@example.com"`
-`git config user.name "Your Name"`
+- get current git username:
+```
+git config --get user.email
+```
+
+- get current git email:
+```
+git config --get user.name
+```
+
+- set local git username:
+```
+git config user.email "your.email@example.com"
+```
+
+- set local git email:
+```
+git config user.name "Your Name"
+```
 
 ### git cherry-pick
 
 - to cherry pick a commit switch to the branch that the commit will be applied to, then run:
-`git cherry-pick <commit-hash>`
+```
+git cherry-pick <commit-hash>
+```
+
 - or for a range of commits:
-`git cherry-pick <start-commit-hash>^..<end-commit-hash>`
-(The ^ symbol after the start commit indicates that you want to include the start commit in the range. In the above example, both the start and end commits will be included)
+```
+git cherry-pick <start-commit-hash>^..<end-commit-hash>
+```
+> The ^ symbol after the start commit indicates that you want to include the start commit in the range. In the above example, both the start and end commits will be included
+
 - if the cherry-pick has merge conflicts, you can resolve them in VS Code or abort the changes:
-`git cherry-pick --abort`
+```
+git cherry-pick --abort
+```
 
 ### git stash
 
-- stash tracked/untracked, staged/unstaged files. All files will be stashed as unstaged. `-m "my message"` optional:
-`git stash -u -m "my message"`
-- stash tracked/untracked but don't stash staged:
-`git stash push -u --keep-index -m "my message"`
+- stash tracked/untracked, staged/unstaged files. All files will be stashed as unstaged (message is optional):
+```
+git stash -u -m "my message"
+```
+
+- stash tracked/untracked but don't stash staged (message is optional):
+```
+git stash push -u --keep-index -m "my message"
+```
+
 - list stashes:
-`git stash list`
-- view stash contents (omit stash name to view `stash@{0}`):
-`git stash show -p "stash@{2}"`
-- apply a specific stash by index (omit stash name to apply `stash@{0}`):
-`git stash apply stash@{2}`
-- delete stash (omit stash name to delete `stash@{0}`):
-`git stash drop "stash@{2}"`
+```
+git stash list
+```
+
+- view stash contents (omit stash name to view most recent stash `stash@{0}`):
+```
+git stash show -p "stash@{2}"
+```
+
+- apply a specific stash by index (omit stash name to apply most recent stash `stash@{0}`):
+```
+git stash apply stash@{2}
+```
+
+- delete stash (omit stash name to delete most recent stash `stash@{0}`):
+```
+git stash drop "stash@{2}"
+```
+
 - delete all stashes:
-`git stash clear`
+```
+git stash clear
+```
+
 - retrieve dropped stash: https://stackoverflow.com/questions/65182172/visual-studio-undo-drop-stash
 
 ## Advanced CLI Operations
 
-view the common ancestor node between two branches (for example, to see when a feature branch stemmed off of main):
-- find the common ancestor commit id: `git merge-base branch1 branch2`
-- see commit details (including date, commit message, etc.): `git show <commit-id>`
+### View Common Ancestor Commit
+
+view the common ancestor commit between two branches (for example, to see when a feature branch stemmed off of main):
+- find the common ancestor commit id:
+```
+git merge-base branch1 branch2
+```
+- see commit details (including date, commit message, etc.):
+```
+git show <commit-id>
+```
+
+### Undo Accidental Commit to Main
 
 if you accidentally made a commit to local main (but haven't pushed), you can move that commit to a new feature branch:
-- find the commit hash of your commit and copy it: `git log --oneline`
-- create your feature branch off of that commit: `git branch <feature-branch-name> <commit-hash>`
-- reset main back one commit (this cannot be undone): `git reset --hard HEAD~1`
-- switch to the feature branch: `git switch <feature-branch-name>`
+- find the commit hash of your commit and copy it:
+```
+git log --oneline
+```
+- create your feature branch off of that commit:
+```
+git branch <feature-branch-name> <commit-hash>
+```
+- reset main back one commit (this cannot be undone):
+```
+git reset --hard HEAD~1
+```
+- switch to the feature branch:
+```
+git switch <feature-branch-name>
+```
 
-how to handle needing changes on a branch that is currently stuck in a PR, and squash commits are enabled for all PRs:
-the problem: recall that squash commits create a brand new commit with a brand new hash. if feature branch B branched from feature branch A, and then A squash merges into main, then it is possible for code changes to occur that were unintentional when branch B squash merges into main. For example, if feature branch X changes lines that A touched (and merge conflicts were dealt with), and is squash merged into main after A but before B, then applying B could accidentally undo changes that X made when B is squash merged into main. This is because those initial commits from A that exist on B are still there, and reapply into main.
-the solve:
-- create feature branch B off of feature branch A
-`git switch FeatureA`
-`git switch -c FeatureB`
-- when finished making changes on B, pull latest main:
-`git switch main`
-`git pull`
+### Continue Work on Pending Changes in PR
+
+how to handle needing changes on a branch that is currently stuck in a PR:
+- If branch FeatureA is stuck in a PR, create branch FeatureB off of branch FeatureA that you will continue development on:
+```
+git switch FeatureA
+git switch -c FeatureB
+```
+- the following assumes that the PR for FeatureA has completed at this point. when finished making changes on branch FeatureB or whenever you'd like to resync main, pull latest:
+```
+git switch main
+git pull
+```
 - create a new branch from main (this branch will eventually be the one to merge to main in the PR, so name it accordingly)
-`git switch -c FeatureB2`
-- switch back to B:
-`git switch FeatureB`
-- start an interactive rebase:
-`git rebase -i FeatureB2`
-- this will open a text editor with a list of all the commits between `FeatureB` and `FeatureB2` (which currently matches `main`), something like this:
+```
+git switch -c FeatureB2
+```
+- switch back to FeatureB:
+```
+git switch FeatureB
+```
+- start an interactive rebase to add the new commits from FeatureB onto FeatureB2:
+```
+git rebase -i FeatureB2
+```
+- this will open a text editor with a list of all the commits between `FeatureB` and `FeatureB2` (which currently shares a HEAD with `main`), something like this:
 ```
 pick 1fc6c95 do something
 pick 6b2481b do something else
 pick dd1475d changed some things
 pick c619268 more changes
 ```
-- in the text editor, replace `pick` with `drop` for the commits you want to drop (the ones that have been included in the squash merge). it should look something like this:
+- in the text editor, replace `pick` with `drop` for the commits you want to drop (the ones that have been included in the PR from FeatureA). it should look something like this:
 ```
 drop 1fc6c95 do something
 drop 6b2481b do something else
