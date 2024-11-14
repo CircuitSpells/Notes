@@ -11,7 +11,7 @@ git init
 
 ### git switch
 
-create a new branch based on master:
+create a new branch based on the current branch:
 ```
 git switch -c <new-branch-name>
 ```
