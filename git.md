@@ -75,11 +75,6 @@ reset files to match the main branch:
 git checkout <main-branch> -- <directory-or-file-path>
 ```
 
-checkout a specific commit:
-```
-git checkout <commit-hash>
-```
-
 ### git restore
 
 unstage files:
