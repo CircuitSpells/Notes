@@ -27,7 +27,7 @@ switch to a commit:
 git switch --detach <commit-hash>
 ```
 
-## git push
+### git push
 
 push current branch and set remote as upstream:
 ```
