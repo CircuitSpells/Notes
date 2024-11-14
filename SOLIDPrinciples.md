@@ -1,13 +1,5 @@
 # SOLID Principles
 
-- [SOLID Principles](#solid-principles)
-  - [Single Responsibility Principle](#single-responsibility-principle)
-  - [Open-Closed Principle](#open-closed-principle)
-  - [Liskov Substitution Principle](#liskov-substitution-principle)
-  - [Interface Segregation Principle](#interface-segregation-principle)
-  - [Dependency Inversion Principle](#dependency-inversion-principle)
-
-
 ## Single Responsibility Principle
 
 `A class should have one and only one reason to change, meaning that a class should have only one job.`
