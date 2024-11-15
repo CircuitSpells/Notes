@@ -224,15 +224,15 @@ git show <commit-id>
 
 ### git merge
 
-- merge feature branch into main:
+- merge branchB into branchA:
 ```
-git switch main
+git switch branchA
 git pull
-git merge <feature-branch>
+git merge branchB
 ```
 > - or, optionally:
 > ```
-> git merge --squash <feature-branch>
+> git merge --squash branchB
 > ```
 
 ### git reset
