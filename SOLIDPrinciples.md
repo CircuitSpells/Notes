@@ -16,7 +16,7 @@ This means that a parent class should be built to be easily extendable by child 
 
 `Let q(x) be a property provable about objects of x of type T. Then q(y) should be provable for objects y of type S where S is a subtype of T.`
 
-This is a really roundabout way of saying that a child class should be able to be replaced by its parent class without breaking behavior (with the exception of properties/methods custom to the child class).
+This is a really mathy way of saying that a child class should be able to be replaced by its parent class without breaking behavior (with the exception of properties/methods custom to the child class).
 
 ## Interface Segregation Principle
 
