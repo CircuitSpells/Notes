@@ -339,6 +339,18 @@ git stash clear
 
 - retrieve dropped stash: https://stackoverflow.com/questions/65182172/visual-studio-undo-drop-stash
 
+### git clean
+
+print out list of files and directories which will be removed without removing them:
+```
+git clean -d --dry-run
+```
+
+delete files that are not under version control:
+```
+git clean -fd
+```
+
 ## Advanced CLI Operations
 
 ### View Common Ancestor Commit
