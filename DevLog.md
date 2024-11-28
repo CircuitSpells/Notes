@@ -1,5 +1,69 @@
 # DevLog
 
+## Check Equality for Collections of Different Types
+
+11/27/24
+
+The below `CheckEquality` method is a handy tool for tests to check if two collections of different types are equivalent (note that this uses the FluentAssertions package):
+
+```C#
+using FluentAssertions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace IntegrationTests.Utilities
+
+internal static class EqualityComparer
+{
+    internal static void CheckEquality<TExpected, TActual>(
+        List<TExpected> expectedList,
+        List<TActual> actualList,
+        Func<TExpected, object> getExpectedCompareProperty,
+        Func<TActual, object> getActualCompareProperty,
+        Action<TExpected, TActual> checkItemEquality)
+    {
+        expectedList.Should().NotBeNull();
+        actualList.Should().NotBeNull();
+        foreach (var expectedItem in expectedList)
+        {
+            TActual actualItem = actualList.FirstOrDefault(actual => getExpectedCompareProperty(expectedItem).Equals(getActualCompareProperty(actual)));
+            actualItem.Should().NotBeNull("actual and expected should have matched on a property but failed");
+
+            checkItemEquality(expectedItem, actualItem);
+
+            actualList.Remove(actualItem);
+        }
+    }
+}
+```
+
+Note that the order of each item in the collection does not matter, however the number of items in each collection needs to match. The items are matched on an initial "compare property" (usually an id or other unique identifier), then those matched items are compared by a delegate that you write.
+
+Usage:
+
+```C#
+List<SomeType> collectionExpected = new()
+{
+    // ...
+};
+List<SomeOtherType> collectionActual = new()
+{
+    // ...
+};
+
+EqualityComparer.CheckEquality(
+    collectionExpected,
+    collectionActual,
+    expected => expected.Id,
+    actual => actual.SomeOtherId,
+    (expected, actual) =>
+    {
+        actual.SomeProperty.Should().Be(expected.SomeOtherProperty);
+        actual.SomeProperty2.Should().Be(expected.SomeOtherProperty2);
+    });
+```
+
 ## AddSingleton, AddScoped, AddTransient
 
 11/1/24
