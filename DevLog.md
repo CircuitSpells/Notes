@@ -1,5 +1,11 @@
 # DevLog
 
+## Angular Optimizations
+
+12/18/24
+
+Angular optimizations can sometimes have negative and unpredictable behavior. They can be enabled in the build configuration in `angular.json` as well as by setting the `production` boolean in the `environment.ts` file to `true` in order to call `enableProdMode()`. Make sure that if optimizations are turned on for production that they are turned on for lower environments as well so that no unexpected differences occur in the prod build.
+
 ## Check Equality for Collections of Different Types
 
 11/27/24
