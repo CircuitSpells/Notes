@@ -205,9 +205,12 @@ git log -- <file-name>
 git log -- <directory-path>
 ```
 
-- view all commits since the feature branch branched from main:
+- view all commits since the feature branch branched from main (or between two commits on the same branch):
 ```
 git log <main-branch>..<feature-branch>
+```
+```
+git log <start-commit>..<end-commit>
 ```
 
 - search commits that contain a commit message (useful with conventional commits), such as "feat:":
