@@ -263,6 +263,14 @@ git reset --soft HEAD~<N>
 > git reset --soft HEAD~1
 > ```
 
+### git revert
+
+- undo a commit from origin and add that undo as a new commit:
+```
+git revert <commit-hash> --no-edit
+git push
+```
+
 ### git config
 
 - get current git username:
