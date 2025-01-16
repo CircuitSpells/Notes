@@ -1,5 +1,11 @@
 # DevLog
 
+## Angular Extensions
+
+1/16/25
+
+- Angular Language Service
+
 ## Angular Optimizations
 
 12/18/24
