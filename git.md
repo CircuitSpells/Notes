@@ -441,7 +441,7 @@ pick c619268 more changes
 
 ## Conventional Commits
 
-Conventional Commits are meant to go hand-in-hand with semantic versioning. See the docs [here](https://www.conventionalcommits.org/en/v1.0.0-beta.2/).
+Conventional Commits are meant to go hand-in-hand with semantic versioning. See the docs [here](https://semver.org/).
 
 commit message structure:
 ```
