@@ -302,7 +302,12 @@ git config --global alias.<alias-name> '<git-command>'
 > git config --global alias.gs 'status'
 > git gs
 > ```
-> remove `--global` if you want the alias to be local
+> remove `--global` if you want the alias to be local. Edit aliases in the .gitconfig file.
+
+- view aliases
+```
+git config --global --get-regexp alias
+```
 
 ### git cherry-pick
 
