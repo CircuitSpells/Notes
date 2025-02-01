@@ -293,6 +293,17 @@ git config user.email "your.email@example.com"
 git config user.name "Your Name"
 ```
 
+- set an alias
+```
+git config --global alias.<alias-name> '<git-command>'
+```
+> alias to create a shorthand for 'git status', e.g.:
+> ```
+> git config --global alias.gs 'status'
+> git gs
+> ```
+> remove `--global` if you want the alias to be local
+
 ### git cherry-pick
 
 - to cherry pick a commit, switch to the branch that the commit will be added to and then run:
