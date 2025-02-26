@@ -51,16 +51,14 @@ unstage files:
 git restore --staged <directory-or-file-path>
 ```
 
-discard changes to unstaged files:
+reset files to match the last commit (discard changes):
 ```
 git restore <directory-or-file-path>
 ```
 
-### git checkout
-
 reset files to match the main branch:
 ```
-git checkout <main-branch> -- <directory-or-file-path>
+git restore --source <main-branch> <directory-or-file-path>
 ```
 
 ### git status
