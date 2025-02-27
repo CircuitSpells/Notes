@@ -193,6 +193,11 @@ git log
 git log --oneline
 ```
 
+- see commit graph:
+```
+git log --graph --decorate --oneline
+```
+
 - see the commit history of a file:
 ```
 git log -- <file-name>
