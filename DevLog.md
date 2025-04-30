@@ -1,5 +1,12 @@
 # DevLog
 
+## CQRS and MediatR
+
+4/30/25
+
+- Article on CQRS and MediatR: https://www.milanjovanovic.tech/blog/cqrs-pattern-with-mediatr
+- Mediator design pattern: https://refactoring.guru/design-patterns/mediator
+
 ## Angular Extensions
 
 1/16/25
@@ -107,10 +114,11 @@ HttpClientFactory is a common service to create HttpClients in order to make htt
 11/1/24
 
 In addition to the [Fluent libraries](#fluent-libraries) mentioned below, here are some more useful tools:
+
 - [Bogus](https://github.com/bchavez/Bogus) (quickly create fake objects with realistic fake data)
-    - Advice: When using RuleFor() for a string, use `f.Random.Words()` instead of `f.Random.String()`. The latter generates random garbage text that sometimes has issues during json serialization/deserialization. The former generates a few random english words.
+  - Advice: When using RuleFor() for a string, use `f.Random.Words()` instead of `f.Random.String()`. The latter generates random garbage text that sometimes has issues during json serialization/deserialization. The former generates a few random english words.
 - [WireMock](https://github.com/WireMock-Net/WireMock.Net) (mock external APIs in-box)
-    - The docs on [stubbing](https://github.com/WireMock-Net/WireMock.Net/wiki/Stubbing) are good place to start.
+  - The docs on [stubbing](https://github.com/WireMock-Net/WireMock.Net/wiki/Stubbing) are good place to start.
 
 ## PowerShell Policies
 
@@ -129,6 +137,7 @@ Set-ExecutionPolicy Bypass # Nothing is blocked and there are no warnings or pro
 ```
 
 To change the policy only in the current session:
+
 ```pwsh
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
 ```
@@ -138,6 +147,7 @@ Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
 7/17/24
 
 Fluent makes some really great and robust libraries for common needs in a .NET API:
+
 - [FluentValidation](https://docs.fluentvalidation.net/en/latest/)
 - [FluentAssertions](https://fluentassertions.com/)
 - [FluentResults](https://github.com/altmann/FluentResults)
@@ -155,6 +165,7 @@ Fluent makes some really great and robust libraries for common needs in a .NET A
 Azure DevOps can usually handle conflicts with Dev in Main okay because it allows you the option to "take source" or "take target" when merging. However, GitLab doesn't offer this nicety, and even the way Azure DevOps handles it under the hood probably isn't doing what you expect.
 
 So, ideally, what you should do is merge main into dev right after merging dev into main. It should look something like this:
+
 - Make a PR for dev -> main
 - Merge dev -> main
 - Locally, pull dev and main
@@ -163,6 +174,7 @@ So, ideally, what you should do is merge main into dev right after merging dev i
 - Create a PR for "merge-main-into-dev" -> dev
 
 If you don't do this, you'll end up with a lot of conflicts. To resolve these:
+
 - Locally, pull dev and main
 - Locally, create a branch off of dev, say "dev-clone"
 - run the following: `git merge -s ours main`
@@ -178,17 +190,19 @@ Remember how I mentioned earlier that Azure DevOps "take source" and "take targe
 
 In a language like C, primitive data types are unable to be null. This is because all bits for that type are dedicated to storing the value of the type in question. One way around this is to store a pointer to that data type, and if you need the value to be null, you can point the pointer to a null reference.
 
-C# does not do this. non-nullable primitives have the same behavior as C in regards to their nullability. However, `int?` is just syntactic sugar for `Nullable<int>`, which is a struct that also holds a boolean value for whether or not the int value is valid (aka "null"). C# objects on the other hand *do* have pointers referencing their data, and those pointers will point to a null reference when that object is null. What this means is that `int? foo = null;` and `MyClass myClass = null` are not actually doing the same thing under the hood.
+C# does not do this. non-nullable primitives have the same behavior as C in regards to their nullability. However, `int?` is just syntactic sugar for `Nullable<int>`, which is a struct that also holds a boolean value for whether or not the int value is valid (aka "null"). C# objects on the other hand _do_ have pointers referencing their data, and those pointers will point to a null reference when that object is null. What this means is that `int? foo = null;` and `MyClass myClass = null` are not actually doing the same thing under the hood.
 
 In C#, the exception to this is "boxing". Boxing occurs when a primitive type needs to be stored on the heap. That primitive type is wrapped in an `object`, and a pointer references that object as if it were any other class.
 
 The most basic example of this is when an `object` type references a primitive type:
+
 ```C#
 int myInt = 10;
 object myObject = myInt; // Boxing occurs here
 ```
 
 And similarly:
+
 ```C#
 void Display(object obj) { /* ... */ }
 
@@ -197,6 +211,7 @@ Display(myInt); // Boxing occurs here
 ```
 
 Recall that in addition to primitives, structs are also value types. Boxing can occur for structs under certain conditions, such as casting the struct to an interface:
+
 ```C#
 struct MyStruct : IMyInterface
 {
@@ -210,6 +225,7 @@ IMyInterface myInterface = myStruct; // Boxing occurs here
 Fun fact: before C# supported generic types (pre C# version 2.0), C# used the much more aptly named `ArrayList` and `HashTable` types. However, because these types didn't use generics and instead treated all values as an `object` type, boxing would occur for every item in the collection, causing a notable performance impact. These non-generic collections, while still usable, are now considered deprecated and should not be used.
 
 However, even generics have gotchas. For example, if the generic uses behavior specific to reference types (e.g. `object.Equals()`), then boxing will occur:
+
 ```C#
 void MyGenericMethod<T>(T item)
 {
@@ -228,6 +244,7 @@ Boxing can have performance implications, especially in high-performance or memo
 Memoization is an optimization that caches expensive function calls. This is usually in the form of using a hash table to store the function's arguments as a key, and the function's return as the value. This can be particularly useful for recursion.
 
 One example where this is useful is the Fibonacci sequence. Here's the naive approach:
+
 ```Python
 def fibonacci(n):
     if n <= 1:
@@ -236,6 +253,7 @@ def fibonacci(n):
 ```
 
 Using memoization:
+
 ```Python
 def fibonacci(n, memo={}):
     if n in memo:
@@ -257,21 +275,25 @@ Memoization is a form of dynamic programming. Dynamic programming is the concept
 1/14/24
 
 Install nuget CLI:
+
 ```
 winget install NuGet -e
 ```
 
 Search packages:
+
 ```
 nuget search MyPackage
 ```
 
 Install MSTest:
+
 ```
 dotnet add MSTest.TestFramework
 ```
 
 Use MSTest:
+
 ```C#
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -297,8 +319,9 @@ public class MyClassNameTests
 1/14/24
 
 As of 1/14/24:
+
 - ChatGPT 3.5 is aware of C# 10 and .NET 6. It cannot search the internet for updates.
-- ChatGPT 4 is only aware of C# 11 and .NET 7, however it *can* be prompted to search the internet for newer versions.
+- ChatGPT 4 is only aware of C# 11 and .NET 7, however it _can_ be prompted to search the internet for newer versions.
 - CoPilot, while backed by ChatGPT 4, is only aware of C# 9 and .NET 5. It cannot search the internet for updates.
 
 ## C# pass by value, reference, and the equivalent of C++ "const reference"
@@ -306,14 +329,16 @@ As of 1/14/24:
 1/14/24
 
 Consider the following scenarios:
-  1. A value type is "passed by value"
-  2. A value type is "passed by reference"
-  3. A reference type is "passed by value"
-  4. A reference type is "passed by reference"
+
+1. A value type is "passed by value"
+2. A value type is "passed by reference"
+3. A reference type is "passed by value"
+4. A reference type is "passed by reference"
 
 Recall that value types include primitives and structs, whereas reference types include objects (the simplest test to determine if a type is value or reference is to determine of that type can be `null` without using the `Nullable<t>` class, a.k.a. the `?` operator).
 
 Passing a value type by value:
+
 ```C#
 void PassValueTypeByValue(int x)
 {
@@ -322,6 +347,7 @@ void PassValueTypeByValue(int x)
 ```
 
 Passing a value type by reference:
+
 ```C#
 void PassValueTypeByReference(ref int x)
 {
@@ -330,6 +356,7 @@ void PassValueTypeByReference(ref int x)
 ```
 
 Passing a reference type by value:
+
 ```C#
 void PassReferenceTypeByValue(MyClass myClass)
 {
@@ -347,6 +374,7 @@ void PassReferenceTypeByValue(MyClass myClass)
 ```
 
 Passing a reference type by reference:
+
 ```C#
 void PassReferenceTypeByReference(ref MyClass myClass)
 {
@@ -368,6 +396,7 @@ Sometimes, pass by reference behavior is needed while also promising that the ar
 In C#, there are two ways to achieve the C++ "const reference" behavior:
 
 1. Using the `in` keyword:
+
 ```C#
 void PassByReadonlyReferenceWithIn(in int x) // x is passed by reference through a temporary variable
 {
@@ -376,11 +405,12 @@ void PassByReadonlyReferenceWithIn(in int x) // x is passed by reference through
 
 // at the call site:
 PassByReadonlyReferenceWithIn(y); // the compiler decides whether to pass by value or reference. if y is an int, it will be passed by reference.
-// or 
+// or
 PassByReadonlyReferenceWithIn(in y); // ensures the argument is passed by reference. Throws a compilation error if y is, say, a short
 ```
 
 1. Or as of C# 12, using `ref readonly`:
+
 ```C#
 void PassTByReadonlyReference(ref readonly int x) // x is passed by reference
 {
@@ -501,6 +531,7 @@ class Program
 ```
 
 Though not utilized in this example, `object sender` and `EventArgs e` are standard arguments in event handlers:
+
 - The `object sender` parameter refers to the object that triggered the event (in this case the EventPublisher object). This is useful when the event handler is used by multiple objects, e.g. multiple buttons in a GUI do the same thing.
 - `EventArgs` may contain additional information about the event. While EventArgs itself may not contain much information, it is a common practice to use a derived class when more specific data needs to be passed to the event handler.
 
