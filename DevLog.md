@@ -12,6 +12,7 @@ Integration Testing Using Docker In .NET: https://www.milanjovanovic.tech/blog/t
 
 - Article on CQRS and MediatR: https://www.milanjovanovic.tech/blog/cqrs-pattern-with-mediatr
 - Mediator design pattern: https://refactoring.guru/design-patterns/mediator
+- Interesting article series on the pitfalls of MediatR, and alternative solutions: https://arialdomartini.github.io/mediatr
 
 ## Angular Extensions
 
