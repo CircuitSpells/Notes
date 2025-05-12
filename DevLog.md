@@ -1,5 +1,95 @@
 # DevLog
 
+## .NET DateTimeProvider
+
+5/12/25
+
+.NET 8 introduced a built-in `TimeProvider` class so that you do not have to make your own time provider abstraction:
+
+```C#
+// Program.cs
+builder.Services.AddSingleton<TimeProvider>(TimeProvider.System);
+```
+
+Then in your service, inject the `TimeProvider`:
+
+```C#
+public sealed class ReportService
+{
+    private readonly TimeProvider _timeProvider;
+
+    public ReportService(TimeProvider timeProvider) => _timeProvider = timeProvider;
+
+    // business rule: a report is stale after 24 h
+    public bool IsReportStale(DateTimeOffset lastRunUtc) =>
+        _timeProvider.GetUtcNow() - lastRunUtc > TimeSpan.FromHours(24);
+}
+```
+
+In your tests, you can use the `Microsoft.Extensions.TimeProvider.Testing` package to deterministically alter the time:
+
+```C#
+[Fact]
+public void IsReportStale_Should_ReturnFalse_When_ReportIsOlderThan24Hours()
+{
+    var fakeClock = new FakeTimeProvider(DateTimeOffset.Parse("2025‑01‑01T00:00:00Z"));
+    var reportService = new ReportService(fakeClock);
+
+    // 1 h later – should still be fresh
+    fakeClock.Advance(TimeSpan.FromHours(1));
+    Assert.False(reportService.IsReportStale(fakeClock.Start));
+
+    // 25 h later – now stale
+    fakeClock.Advance(TimeSpan.FromHours(24));
+    Assert.True(reportService.IsReportStale(fakeClock.Start));
+}
+```
+
+Here is how to replace the `TimeProvider` Singleton for WebApplicationFactory:
+
+```C#
+public sealed class ApiFactory : WebApplicationFactory<Program>
+{
+    public FakeTimeProvider Clock { get; } =
+        new(DateTimeOffset.Parse("2025‑01‑01T00:00:00Z"));
+
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    {
+        builder.ConfigureServices(s =>
+        {
+            s.RemoveAll<TimeProvider>();
+            s.AddSingleton<TimeProvider>(Clock);
+        });
+    }
+}
+```
+
+```C#
+public class ReportTests : IClassFixture<ApiFactory>
+{
+    private readonly ApiFactory _factory;
+
+    public ReportTests(ApiFactory factory) => _factory = factory;
+
+    [Fact]
+    public async Task Report_Should_BeInvalid_When_ReportIsOlderThan24Hours()
+    {
+        var client = _factory.CreateClient();
+
+        // reset clock before each test
+        _factory.Clock = DateTimeOffset.Parse("2025‑01‑01T00:00:00Z");
+
+        // ...
+
+        _factory.Clock.Advance(TimeSpan.FromHours(25));
+
+        // ...
+    }
+}
+```
+
+Note that race conditions will not be an issue here; in xUnit, tests in the same test fixture run in serial, and tests in a separate test fixture will get their own separate factory (and therefore separate clock) instance.
+
 ## Alternatives to DateTime
 
 5/12/25
