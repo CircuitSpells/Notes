@@ -1,5 +1,38 @@
 # DevLog
 
+## Alternatives to DateTime
+
+5/12/25
+
+As of .NET 6, the `DateTime` class is largely unnecessary. Instead use:
+
+- `DateOnly` for pure dates
+- `TimeOnly` for pure times
+- `DateTimeOffset` for any absolute timestamp
+
+`DateTimeOffset` provides a built-in UTC offset value for every timestamp, removing any ambiguity about which timezone the timestamp is in:
+
+```C#
+DateTime dtUtc = DateTime.UtcNow;
+DateTimeOffset dtoUtc = DateTimeOffset.UtcNow;
+
+Console.WriteLine(dtUtc); // 05/12/2025 10:30:25
+Console.WriteLine(dtoUtc); // 05/12/2025 10:30:25 +00:00
+```
+
+Other ways of setting `DateTimeOffset`:
+
+```C#
+// Create with local offset
+var dtoLocal = new DateTimeOffset(2025,5,12,10,30,25, TimeZoneInfo.Local.GetUtcOffset(DateTime.Now));
+
+// Create explicitly with offset
+var dtoUtcMinus7 = new DateTimeOffset(2025,5,12,10,30,25, TimeSpan.FromHours(-7));
+
+// Compare instants
+bool isSameInstant = dtoLocal.UtcDateTime == dtoUtcMinus7.UtcDateTime;
+```
+
 ## New Global Error Handling in .NET 8
 
 5/9/25
