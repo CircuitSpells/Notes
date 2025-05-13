@@ -243,7 +243,7 @@ public class ReportTests : IClassFixture<ApiFactory>
 
 Note that race conditions will not be an issue here; in xUnit, tests in the same test fixture run in serial, and tests in a separate test fixture will get their own separate factory (and therefore separate clock) instance.
 
-## Alternatives to DateTime
+## Alternatives to DateTime in .NET
 
 5/12/25
 
