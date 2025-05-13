@@ -1,5 +1,49 @@
 # DevLog
 
+## Angular Signals Quick Reference
+
+5/13/25
+
+Create and listen to signals:
+
+```ts
+price: number = 123.45;
+
+// Init signal
+quantity: WriteableSignal<number> = signal<number>(1);
+
+// Listen to a signal's updates, return a read-only signal
+totalPrice: Signal<number> = computed<number>(
+  () => this.price * this.quantity() // use parenthesis after a signal's name to get its value
+);
+
+// Listen to a signal's updates, do not return a new value. Use for logging and calling external APIs
+effect(() => console.log(this.quantity()));
+```
+
+Modify signal values:
+
+```ts
+// Replace the signal's value
+this.quantity.set(qty);
+
+// Update the signal's value based on its current value
+// Immutable; returns a brand-new value
+this.quantity.update((qty: number) => qty * 2);
+
+// Modify the content in place (not the value itself)
+// Mutable; directly modify the existing object or array (do not use with primitive types--primitives are always immutable)
+this.selectedItem.mutate((i: Item) => (i.price = i.price * 1.2));
+```
+
+Listen to signals in templates:
+
+```html
+<!-- Display the signal's current value and register the signal as a view dependency -->
+<!-- If the signal value changes, the view is re-rendered -->
+<div>Total: {{ totalPrice() }}</div>
+```
+
 ## Angular/Typescript Generics Using the "keyof" and "extends keyof" Operators
 
 5/13/25
