@@ -1,5 +1,114 @@
 # DevLog
 
+## Angular/Typescript Generics Using the "keyof" and "extends keyof" Operators
+
+5/13/25
+
+Say we want to implement a generic update and logging method for the `snack` and `user` signals:
+
+```ts
+export class App {
+  snack = signal<Snack>(SNACK);
+  user = signal<User>(USER);
+
+  updateSnack() {
+    // generic update method here
+    // generic logging method here
+  }
+
+  updateUser() {
+    // generic method here
+    // generic logging method here
+  }
+}
+
+export const SNACK: Snack = {
+  id: 1,
+  name: "popcorn",
+  price: 2.0,
+  isInStock: true,
+};
+export const USER: User = { id: 5, name: "Bilbo", userName: "Hobbit1" };
+
+export interface Snack {
+  id: number;
+  name: string;
+  price: number;
+  isInStock: boolean;
+}
+export interface User {
+  id: number;
+  name: string;
+  userName: string;
+}
+```
+
+The `keyof` operator refers to the properties on an object. Using this knowledge, instead of accessing the property via the usual `this.snack().price` syntax, we can instead use the `keyof` operator to get a generic property using the alternate `this.snack()['price']` syntax:
+
+```ts
+export function logSignal<T>(sg: Signal<T>, prop?: keyof T) {
+  if (prop) {
+    // if "prop" param was passed in
+    console.log(sg()[prop]);
+  } else {
+    console.log(sg());
+  }
+}
+```
+
+`keyof` enforces compile-time type safety, so we cannot for instance call `logSignal(this.snack, 'userName')`, but we can call `logSignal(this.snack, 'price')` (note that the angular brackets aren't needed, e.g. `logSignal<Snack>(this.snack)`, because the type is implied).
+
+Now we can try and make a method for updating a property. To update signals, use the `WritableSignal` class:
+
+```ts
+export function updateProperty<T>(
+  sg: WritableSignal<T>,
+  prop: keyof T,
+  value: T[keyof T]
+) {
+  sg.update((obj) => ({
+    ...obj,
+    [prop]: value,
+  }));
+}
+```
+
+Here, `T[keyof T]` looks at all properties on the `T` object. If we passed in the `user` signal, this param would accept `number | string`, but not `null`, `boolean`, etc. This is almost what we want, but not quite; we could accidentally try and update a property with a value of the wrong type and the compiler would not try to stop us.
+
+The fix for this is by using the `extends keyof` operator:
+
+```ts
+export function updateProperty<T, K extends keyof T>(
+  sg: WritableSignal<T>,
+  prop: keyof T,
+  value: T[K]
+) {
+  sg.update((obj) => ({
+    ...obj,
+    [prop]: value,
+  }));
+}
+```
+
+Now, we get compile-time type safety for the values that are passed in. Finally, we can call these new generic methods:
+
+```ts
+export class App {
+  snack = signal<Snack>(SNACK);
+  user = signal<User>(USER);
+
+  updateSnack() {
+    updateProperty(this.snack, "name", "peanuts");
+    logSignal(this.snack, "name");
+  }
+
+  updateUser() {
+    updateProperty(this.user, "name", "Frodo");
+    logSignal(this.user);
+  }
+}
+```
+
 ## .NET DateTimeProvider
 
 5/12/25
