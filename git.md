@@ -461,6 +461,28 @@ delete files that are not under version control:
 git clean -fd
 ```
 
+### git update-index
+
+hide local edits to _tracked_ files (essentially your own personal .gitignore):
+
+```
+git update-index --assume-unchanged <directory-or-file-path>
+```
+
+> note: to see which files are no longer being tracked due to --assume-unchanged, run the following:
+>
+> ```
+> git ls-files -v | Select-String '^h' -CaseSensitive
+> ```
+
+to undo the `--assume-unchanged` command:
+
+```
+git update-index --no-assume-unchanged <directory-or-file-path>
+```
+
+> note: to ignore _untracked_ files, add them to the `.git/info/exclude` file.
+
 ## Advanced CLI Operations
 
 ### View Common Ancestor Commit
