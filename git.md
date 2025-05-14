@@ -215,37 +215,37 @@ git diff <main-branch>...<feature-branch> -- <directory-or-file-path>
 
 ### git log
 
-- see recent commits:
+see recent commits:
 
 ```
 git log
 ```
 
-- see a compact view of recent commits:
+see a compact view of recent commits:
 
 ```
 git log --oneline
 ```
 
-- see commit graph:
+see commit graph:
 
 ```
 git log --graph --decorate --oneline
 ```
 
-- see the commit history of a file:
+see the commit history of a file:
 
 ```
 git log -- <file-name>
 ```
 
-- see all commits filtered by path:
+see all commits filtered by path:
 
 ```
 git log -- <directory-path>
 ```
 
-- view all commits since the feature branch branched from main (or between two commits on the same branch):
+view all commits since the feature branch branched from main (or between two commits on the same branch):
 
 ```
 git log <main-branch>..<feature-branch>
@@ -255,7 +255,7 @@ git log <main-branch>..<feature-branch>
 git log <start-commit>..<end-commit>
 ```
 
-- search commits that contain a commit message (useful with conventional commits), such as "feat:":
+search commits that contain a commit message (useful with conventional commits), such as "feat:":
 
 ```
 git log --grep='^feat:' --since="1 month ago" --oneline --regexp-ignore-case
@@ -263,7 +263,7 @@ git log --grep='^feat:' --since="1 month ago" --oneline --regexp-ignore-case
 
 ### git show
 
-- show what changed in a specific commit:
+show what changed in a specific commit:
 
 ```
 git show <commit-id>
@@ -271,7 +271,7 @@ git show <commit-id>
 
 ### git merge
 
-- merge branchB into branchA:
+merge branchB into branchA:
 
 ```
 git switch branchA
@@ -279,7 +279,7 @@ git pull
 git merge branchB
 ```
 
-> - or, optionally:
+> or, optionally:
 >
 > ```
 > git merge --squash branchB
@@ -287,13 +287,13 @@ git merge branchB
 
 ### git reset
 
-- abort a merge in progress and permanently remove all uncommitted changes:
+abort a merge in progress and permanently remove all uncommitted changes:
 
 ```
 git reset --hard HEAD
 ```
 
-- undo and delete the last N commits:
+undo and delete the last N commits:
 
 ```
 git reset --hard HEAD~<N>
@@ -305,13 +305,13 @@ git reset --hard HEAD~<N>
 > git reset --hard HEAD~1
 > ```
 
-- undo the last N commits, but keep the changes from the undone commits in the staging area:
+undo the last N commits, but keep the changes from the undone commits in the staging area:
 
 ```
 git reset --soft HEAD~<N>
 ```
 
-> - where N is the number of commits, e.g.:
+> where N is the number of commits, e.g.:
 >
 > ```
 > git reset --soft HEAD~1
@@ -319,7 +319,7 @@ git reset --soft HEAD~<N>
 
 ### git revert
 
-- undo a commit from origin and add that undo as a new commit:
+undo a commit from origin and add that undo as a new commit:
 
 ```
 git revert <commit-hash> --no-edit
@@ -328,37 +328,37 @@ git push
 
 ### git config
 
-- get current git username:
+get current git username:
 
 ```
 git config --get user.email
 ```
 
-- get current git email:
+get current git email:
 
 ```
 git config --get user.name
 ```
 
-- set local git username:
+set local git username:
 
 ```
 git config user.email "your.email@example.com"
 ```
 
-- set local git email:
+set local git email:
 
 ```
 git config user.name "Your Name"
 ```
 
-- set pruning to true (remove tracking to branches that have been deleted on origin):
+set pruning to true (remove tracking to branches that have been deleted on origin):
 
 ```
 git config remote.origin.prune true
 ```
 
-- set an alias
+set an alias
 
 ```
 git config --global alias.<alias-name> '<git-command>'
@@ -373,7 +373,7 @@ git config --global alias.<alias-name> '<git-command>'
 >
 > remove `--global` if you want the alias to be local. Edit aliases in the .gitconfig file.
 
-- view aliases
+view aliases
 
 ```
 git config --global --get-regexp alias
@@ -381,13 +381,13 @@ git config --global --get-regexp alias
 
 ### git cherry-pick
 
-- to cherry pick a commit, switch to the branch that the commit will be added to and then run:
+to cherry pick a commit, switch to the branch that the commit will be added to and then run:
 
 ```
 git cherry-pick <commit-hash>
 ```
 
-- cherry pick a range of commits:
+cherry pick a range of commits:
 
 ```
 git cherry-pick <start-commit-hash>^..<end-commit-hash>
@@ -395,7 +395,7 @@ git cherry-pick <start-commit-hash>^..<end-commit-hash>
 
 > The ^ symbol after the start commit indicates that you want to include the start commit in the range. In the above example, both the start and end commits will be included
 
-- if the cherry-pick has merge conflicts, you can resolve them in a text editor or abort the changes:
+if the cherry-pick has merge conflicts, you can resolve them in a text editor or abort the changes:
 
 ```
 git cherry-pick --abort
@@ -403,49 +403,49 @@ git cherry-pick --abort
 
 ### git stash
 
-- stash tracked/untracked, staged/unstaged files. All files will be stashed as unstaged (message is optional):
+stash tracked/untracked, staged/unstaged files. All files will be stashed as unstaged (message is optional):
 
 ```
 git stash -u -m "my message"
 ```
 
-- stash tracked/untracked but don't stash staged (message is optional):
+stash tracked/untracked but don't stash staged (message is optional):
 
 ```
 git stash push -u --keep-index -m "my message"
 ```
 
-- list stashes:
+list stashes:
 
 ```
 git stash list
 ```
 
-- view stash contents (omit stash name to view most recent stash `stash@{0}`):
+view stash contents (omit stash name to view most recent stash `stash@{0}`):
 
 ```
 git stash show -p "stash@{2}"
 ```
 
-- apply a specific stash by index (omit stash name to apply most recent stash `stash@{0}`):
+apply a specific stash by index (omit stash name to apply most recent stash `stash@{0}`):
 
 ```
 git stash apply stash@{2}
 ```
 
-- delete stash (omit stash name to delete most recent stash `stash@{0}`):
+delete stash (omit stash name to delete most recent stash `stash@{0}`):
 
 ```
 git stash drop "stash@{2}"
 ```
 
-- delete all stashes:
+delete all stashes:
 
 ```
 git stash clear
 ```
 
-- retrieve dropped stash: https://stackoverflow.com/questions/65182172/visual-studio-undo-drop-stash
+retrieve dropped stash: https://stackoverflow.com/questions/65182172/visual-studio-undo-drop-stash
 
 ### git clean
 
@@ -467,13 +467,13 @@ git clean -fd
 
 view the common ancestor commit between two branches (i.e. when a feature branch forked from main):
 
-- find the common ancestor commit id:
+find the common ancestor commit id:
 
 ```
 git merge-base branch1 branch2
 ```
 
-- see commit details (including date, commit message, etc.):
+see commit details (including date, commit message, etc.):
 
 ```
 git show <commit-id>
@@ -483,25 +483,25 @@ git show <commit-id>
 
 if you accidentally made a commit to local main (but haven't pushed), then you can move that commit to a new feature branch:
 
-- find the commit hash of your commit and copy it:
+find the commit hash of your commit and copy it:
 
 ```
 git log --oneline
 ```
 
-- create your feature branch off of that commit:
+create your feature branch off of that commit:
 
 ```
 git branch <feature-branch-name> <commit-hash>
 ```
 
-- reset main back one commit (this cannot be undone):
+reset main back one commit (this cannot be undone):
 
 ```
 git reset --hard HEAD~1
 ```
 
-- switch to the feature branch:
+switch to the feature branch:
 
 ```
 git switch <feature-branch-name>
@@ -511,7 +511,7 @@ git switch <feature-branch-name>
 
 when you start a new branch, sometimes you depend on changes that are currently on another branch that is stuck in a PR. You can use the initial branch's commits to develop off of and then cherry pick the new commits afterward to keep things clean:
 
-- If branch FeatureA is stuck in a PR, create branch FeatureB off of branch FeatureA:
+If branch FeatureA is stuck in a PR, create branch FeatureB off of branch FeatureA:
 
 ```
 git switch FeatureA
@@ -519,32 +519,32 @@ git pull
 git switch -c FeatureB
 ```
 
-- the following assumes that the PR for FeatureA has completed at this point. when finished making changes on branch FeatureB or whenever you'd like to resync main into FeatureB, pull latest:
+the following assumes that the PR for FeatureA has completed at this point. when finished making changes on branch FeatureB or whenever you'd like to resync main into FeatureB, pull latest:
 
 ```
 git switch main
 git pull
 ```
 
-- create a new branch from main (this branch will eventually be the one to merge to main in the PR, so name it accordingly)
+create a new branch from main (this branch will eventually be the one to merge to main in the PR, so name it accordingly)
 
 ```
 git switch -c FeatureB2
 ```
 
-- switch back to FeatureB:
+switch back to FeatureB:
 
 ```
 git switch FeatureB
 ```
 
-- start an interactive rebase to add the new commits from FeatureB onto FeatureB2:
+start an interactive rebase to add the new commits from FeatureB onto FeatureB2:
 
 ```
 git rebase -i FeatureB2
 ```
 
-- this will open a text editor with a list of all the commits between `FeatureB` and `FeatureB2` (which currently shares a HEAD with `main`), something like this:
+this will open a text editor with a list of all the commits between `FeatureB` and `FeatureB2` (which currently shares a HEAD with `main`), something like this:
 
 ```
 pick 1fc6c95 do something
@@ -553,7 +553,7 @@ pick dd1475d changed some things
 pick c619268 more changes
 ```
 
-- in the text editor, replace `pick` with `drop` for the commits you want to drop (the ones that have been included in the PR from FeatureA). it should look something like this:
+in the text editor, replace `pick` with `drop` for the commits you want to drop (the ones that have been included in the PR from FeatureA). it should look something like this:
 
 ```
 drop 1fc6c95 do something
@@ -562,8 +562,7 @@ pick dd1475d changed some things
 pick c619268 more changes
 ```
 
-- save and close the editor. git will start the rebase, and will drop the commits where you replaced `pick` with `drop`.
-- make a PR for `FeatureB2` into `main`.
+save and close the editor. git will start the rebase, and will drop the commits where you replaced `pick` with `drop`. then, make a PR for `FeatureB2` into `main`.
 
 ## Conventional Commits
 
