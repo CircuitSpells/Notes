@@ -1,5 +1,23 @@
 # DevLog
 
+## My Angular Startup
+
+Create a new Angular project:
+
+```
+ng new project-name --defaults --strict --inline-style --inline-template --skip-tests
+```
+
+This automatically inlines styles and templates into newly generated components, and test files will not be automatically generated. CSS is the style preference and there is no built-in server-side rendering. Lastly, the `--strict` flag enforces strict typescript rules.
+
+New components can be generated like this:
+
+```
+ng g component components/hello --flat
+```
+
+Note: `ng new` and `ng g` offer the `-d` flag which is the alias for `--dry-run`.
+
 ## Angular Signals Quick Reference
 
 5/13/25
