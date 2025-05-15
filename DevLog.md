@@ -15,7 +15,7 @@ This automatically inlines styles and templates into newly generated components,
 New components can be generated like this:
 
 ```
-ng g component components/hello --flat
+ng g component components/component-name --flat
 ```
 
 Note: `ng new` and `ng g` offer the `-d` flag which is the alias for `--dry-run`.
