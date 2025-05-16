@@ -305,7 +305,7 @@ git reset --hard HEAD~<N>
 > git reset --hard HEAD~1
 > ```
 
-undo the last N commits, but keep the changes from the undone commits in the staging area:
+undo the last N commits, but keep the changes from the undone commits in the staging area (use this if you accidentally commit to main):
 
 ```
 git reset --soft HEAD~<N>
@@ -499,34 +499,6 @@ see commit details (including date, commit message, etc.):
 
 ```
 git show <commit-id>
-```
-
-### Undo Accidental Commit to Main
-
-if you accidentally made a commit to local main (but haven't pushed), then you can move that commit to a new feature branch:
-
-find the commit hash of your commit and copy it:
-
-```
-git log --oneline
-```
-
-create your feature branch off of that commit:
-
-```
-git branch <feature-branch-name> <commit-hash>
-```
-
-reset main back one commit (this cannot be undone):
-
-```
-git reset --hard HEAD~1
-```
-
-switch to the feature branch:
-
-```
-git switch <feature-branch-name>
 ```
 
 ### Continue Work on Pending Changes in PR
