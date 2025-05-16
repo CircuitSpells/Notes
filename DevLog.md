@@ -4,12 +4,7 @@
 
 5/16/25
 
-<p class="codepen" data-height="300" data-default-tab="html,result" data-slug-hash="kNZRER" data-pen-title="Bar Navigation with Flexbox and SVG icons" data-user="chriscoyier" style="height: 300px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;">
-  <span>See the Pen <a href="https://codepen.io/chriscoyier/pen/kNZRER">
-  Bar Navigation with Flexbox and SVG icons</a> by Chris Coyier  (<a href="https://codepen.io/chriscoyier">@chriscoyier</a>)
-  on <a href="https://codepen.io">CodePen</a>.</span>
-</p>
-<script async src="https://public.codepenassets.com/embed/index.js"></script>
+https://codepen.io/chriscoyier/pen/kNZRER
 
 ## My Angular Startup
 
