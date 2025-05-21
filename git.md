@@ -560,7 +560,7 @@ save and close the editor. git will start the rebase, and will drop the commits 
 
 ## Conventional Commits
 
-Conventional Commits are meant to go hand-in-hand with semantic versioning. See the docs [here](https://semver.org/).
+[Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) are meant to go hand-in-hand with [semantic versioning](https://semver.org/).
 
 commit message structure:
 
