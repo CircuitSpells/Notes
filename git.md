@@ -37,6 +37,20 @@ switch to a commit:
 git switch --detach <commit-hash>
 ```
 
+### git fetch
+
+pull a branch from origin without switching to it:
+
+```
+git fetch origin <origin-branch-name>:<local-branch-name>
+```
+
+> e.g.
+>
+> ```
+> git fetch origin myBranch:myBranch
+> ```
+
 ### git add
 
 stage files:
