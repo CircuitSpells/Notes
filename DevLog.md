@@ -1,5 +1,14 @@
 # DevLog
 
+## Automatically Generate Release Notes
+
+I created a few PowerShell scripts to automatically create release notes:
+
+- [Get-NewCommits](https://github.com/CircuitSpells/PowerShellScripts/blob/main/cmdlets/Get-NewCommits.ps1)
+- [ConvertTo-ReleaseNotes](https://github.com/CircuitSpells/PowerShellScripts/blob/main/cmdlets/ConvertTo-ReleaseNotes.ps1)
+
+In the future I'd like to add the ability to parse and sort by [conventional commit](https://www.conventionalcommits.org/en/v1.0.0/) type.
+
 ## Good Demo on Flexbox
 
 5/16/25
