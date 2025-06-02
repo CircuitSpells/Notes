@@ -515,6 +515,52 @@ see commit details (including date, commit message, etc.):
 git show <commit-id>
 ```
 
+### Move Commits On Main To A New Branch
+
+if you accidentally made commits to main (but haven't pushed), then you can move those commits to a new feature branch (if you have only added one commit to main, consider using `git reset --soft HEAD~1` instead):
+
+find the commit hash of oldest accidental commit to main and copy it:
+
+```
+git log --oneline
+```
+
+create your feature branch off of that commit:
+
+```
+git branch <feature-branch-name> <commit-hash>
+```
+
+switch to the feature branch:
+
+```
+git switch <feature-branch-name>
+```
+
+For each commit after the oldest accidental commit, run git cherry-pick in order of the oldest commit to the newest (there is also a way to add commit ranges but this is less error-prone):
+
+```
+git cherry-pick <commit-hash>
+```
+
+switch back to main:
+
+```
+git switch main
+```
+
+reset main back N commits where N is the number of commits accidentally added to main (this cannot be undone):
+
+```
+git reset --hard HEAD~<N>
+```
+
+switch to the feature branch:
+
+```
+git switch <feature-branch-name>
+```
+
 ### Continue Work on Pending Changes in PR
 
 when you start a new branch, sometimes you depend on changes that are currently on another branch that is stuck in a PR. You can use the initial branch's commits to develop off of and then cherry pick the new commits afterward to keep things clean:
