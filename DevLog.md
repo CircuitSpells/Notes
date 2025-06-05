@@ -1,5 +1,13 @@
 # DevLog
 
+## Javascript Event Loop
+
+6/5/25
+
+Fantastic explanation of the JS event loop:
+
+https://www.youtube.com/watch?v=eiC58R16hb8
+
 ## Automatically Generate Release Notes
 
 I created a few PowerShell scripts to automatically create release notes:
