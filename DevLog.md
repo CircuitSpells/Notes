@@ -1,5 +1,27 @@
 # DevLog
 
+## Enable Hibernate
+
+6/16/25
+
+If Hibernate is not available in the Windows power menu, you can enable it by opening a cmd prompt as an admin and running:
+
+```
+powercfg /hibernate on
+```
+
+To confirm:
+
+```
+powercfg /a
+```
+
+To make Hibernate show up on the Start menu:
+- Go to Control Panel > Hardware and Sound > Power Options > Choose what the power buttons do
+- Click "Change settings that are currently unavailable"
+- Check Hibernate under "Shutdown settings". If the option is greyed out, select "Change settings that are currently unavailable" first.
+- Click Save changes.
+
 ## Javascript Event Loop
 
 6/5/25
