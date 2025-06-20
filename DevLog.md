@@ -17,9 +17,10 @@ powercfg /a
 ```
 
 To make Hibernate show up on the Start menu:
-- Go to Control Panel > Hardware and Sound > Power Options > Choose what the power buttons do
-- Click "Change settings that are currently unavailable"
-- Check Hibernate under "Shutdown settings". If the option is greyed out, select "Change settings that are currently unavailable" first.
+
+- Go to Control Panel > Hardware and Sound > Power Options > Choose what the power buttons do.
+- Click "Change settings that are currently unavailable".
+- Check Hibernate under "Shutdown settings".
 - Click Save changes.
 
 ## Javascript Event Loop
