@@ -39,7 +39,7 @@ git switch --detach <commit-hash>
 
 ### git fetch
 
-pull a branch from origin without switching to it:
+pull a branch from origin without switching to it (note that this will not set the upstream branch--this needs to be manually):
 
 ```
 git fetch origin <origin-branch-name>:<local-branch-name>
@@ -50,6 +50,14 @@ git fetch origin <origin-branch-name>:<local-branch-name>
 > ```
 > git fetch origin myBranch:myBranch
 > ```
+
+### git checkout
+
+pull a branch from origin, switch to it, and automatically set its upstream branch:
+
+```
+git checkout --track origin/<branch-name>
+```
 
 ### git add
 
