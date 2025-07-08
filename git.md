@@ -87,11 +87,13 @@ git restore --source <main-branch> <directory-or-file-path>
 
 ### git status
 
-see tracked/untracked and staged/unstaged files:
+see tracked/untracked and staged/unstaged files, and see upstream branch:
 
 ```
 git status
 ```
+
+> note: if there is an upstream branch, the message `Your branch is up to date with 'origin/<upstream-branch-name>'` will appear, otherwise no message will appear.
 
 ### git commit
 
@@ -177,7 +179,7 @@ git branch --contains <commit-hash>
 
 ### git remote
 
-view upstream branch:
+view remote origin branch:
 
 ```
 git remote -v
