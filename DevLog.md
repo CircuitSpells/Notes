@@ -1,5 +1,52 @@
 # DevLog
 
+## Add Snippets Using Key Commands in VS Code
+
+7/18/25
+
+VS Code allows for custom snippets which we can trigger with key commands. This example will add `<div>` tags around highlighted text when you use the key command `ctrl+alt+w`.
+
+First, add the snippet in html.json by entering `ctrl+shift+p`, type/select "Snippets: Configure Snippets", then select "html". Add the following entry:
+
+```json
+"Wrap with <div>": {
+  "prefix": "wrapdiv",
+  "body": [
+    "<div>",
+    "  ${TM_SELECTED_TEXT}",
+    "</div>"
+  ],
+  "description": "Wrap selection in a <div>…</div>"
+}
+```
+
+To tie this snippet to a key command, enter `ctrl+shift+p` and type/select "Open Keyboard Shortcuts (JSON)" (make sure to select the "(JSON)" option), then add the following entry:
+
+```json
+{
+  "key": "ctrl+alt+w",
+  "command": "editor.action.insertSnippet",
+  "args": {
+    "name": "Wrap with <div>"
+  },
+  "when": "editorTextFocus && editorHasSelection"
+}
+```
+
+Now in any html file, if you select text:
+
+```html
+<h1>Hello World</h1>
+```
+
+And enter `ctrl+alt+w`, the snippet will apply:
+
+```html
+<div>
+  <h1>Hello World</h1>
+</div>
+```
+
 ## My Angular Startup (Update)
 
 7/18/25
