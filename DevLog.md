@@ -1,5 +1,13 @@
 # DevLog
 
+## My Angular Startup (Update)
+
+7/18/25
+
+Since my last [Angular startup](#my-angular-startup), I've made modifications to more closely match Rainer Hahnekamp's suggestions [here](https://dev.to/this-is-angular/my-favorite-angular-setup-in-2025-3mbo), including an automatic flat structure, and the use of husky/lint-staged to enforce linting, testing, and running prettier before every commit. He also recommends using Sheriff for architecture testing to enforce boundary rules between modules.
+
+My github repo for the Angular startup is [here](https://github.com/CircuitSpells/angular-starter). I've modified Rainer's repo a bit; I've updated to Angular v20, removed Tailwind, and changed from scss to css (raw CSS is extremely powerful if you know how to use it!).
+
 ## Enable Hibernate
 
 6/16/25
