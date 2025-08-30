@@ -1,5 +1,23 @@
 # DevLog
 
+## Create Terraform Files From Pre-Existing Azure Resources
+
+8/30/25
+
+If you have resources in Azure created in Azure portal, you can use the `aztfexport` CLI tool to create new terraform files for you automatically:
+
+```
+winget install Microsoft.Azure.AztfExport
+```
+
+Make sure you're logged into Azure CLI and have proper permissions to pull resources, then create and enter an `infra` directory and run:
+
+```
+aztfexport resource-group rg-myproject
+```
+
+This will create the main.tf, provider.tf, and terraform.tf files for you.
+
 ## Add Snippets Using Key Commands in VS Code
 
 7/18/25
