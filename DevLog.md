@@ -13,7 +13,7 @@ winget install Microsoft.Azure.AztfExport
 Make sure you're logged into Azure CLI and have proper permissions to pull resources, then create and enter an `infra` directory and run:
 
 ```
-aztfexport resource-group rg-myproject
+aztfexport resource-group --include-role-assignment rg-myproject
 ```
 
 This will create the main.tf, provider.tf, and terraform.tf files for you.
