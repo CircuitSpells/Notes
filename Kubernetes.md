@@ -1,8 +1,10 @@
 # Kubernetes
 
 - [k8s installation guide](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/).
-- [example code](https://github.com/nigelpoulton/getting-started-k8s).
-- [more example code](https://github.com/nigelpoulton/ps-vols-and-pods).
+- example code:
+  - https://github.com/nigelpoulton/getting-started-k8s
+  - https://github.com/nigelpoulton/ps-vols-and-pods
+  - https://github.com/nigelpoulton/ckad
 - [kubernetes API Reference](https://kubernetes.io/docs/reference/kubernetes-api/).
 - [kubectl CLI reference](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands).
 
@@ -43,6 +45,7 @@ useful commands:
 - `kubectl delete all -l app=<name> -n default` (delete all resources with the label `app=<name>` in the default namespace)
 - `kubectl get svc`
 - `kubectl get pods --show-labels`
+  - can also add the `-o yaml` flag to output the yaml
 - `kubectl describe <type> <name>`
   - e.g. `kubectl describe pod my-pod`
 - `kubectl delete <type> <name>`
@@ -56,6 +59,17 @@ useful commands:
   - alternatively, `kubectl exec some-pod -- <bash-command>` to run a single command without opening the shell.
 - `kubectl logs <pod-name>`
   - specify container: `kubectl logs <pod-name> -c <container-name>`
+- `kubectl config set-context --current --namespace=<namespace-name>` (switch namespaces. see available namespaces with `kubectl get namespace`)
+- `kubectl port-forward <pod-name> <desired-port>:<pod-port> &` (port forward your localhost to a port the pod is listening on)
+
+useful for ckad exam:
+
+- `kubectl create deploy <deploy-name> --image=<image>:<tag> --dry-run=client -o yaml > <file-name>.yaml` (creates a new deployment file)
+- `kubectl create -f <path-to-files>` (create all resources in the directory. Can also use `apply` insted.)
+- `kubectl set selector svc <service-name> 'key=value'` (update a service to point at pods with a certain label)
+- `kubectl scale deploy <deployment-name> --replicas=<num-replicas>` (update a deployment to a new number of replicas)
+- `kubectl set image deploy <deployment-name> <image-name>` (update a deployment to use a different image)
+- `KUBE_EDITOR="nano" kubectl edit <object-type> <object-name>` (update the yaml directly with nano. No need to apply afterwards since `edit` points to the file Kubernetes is directly referencing. This is useful if you imperatively created the services and do not have the yaml files in your file system)
 
 ## Control Plane Nodes
 
@@ -136,63 +150,7 @@ Because pods can spin up/down arbitrarily, their IP addresses are unreliable bec
 The pods that are assigned to a given service object are determined by labels.
 Everything in kubernetes gets labels. The service object looks for pods that share all of the same labels. If a pod has the same labels as the service object, plus a few extra, it will still be included in the service object scope. If a pod contains one but not all labels, it won't be included.
 
-## Deployments
-
-Deployments hold replica sets which hold pods:
-
-- deployment controller:
-  - watches api server for new deployments.
-  - implements deployments.
-  - constantly compares observed state with desired state.
-- replica sets:
-  - replica count, self-healing, old versions
-
-simple deployment yaml example:
-
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: web-deploy
-  labels:
-    app: web
-spec:
-  replicas: 5
-  selector:
-    matchLabels:
-      app: web
-  template:
-    metadata:
-      labels:
-        app: web
-    spec:
-      terminationGracePeriodSeconds: 1
-      containers:
-        - name: hello-pod
-          image: path/getting-started-k8s:1.0
-          imagePullPolicy: Always
-          ports:
-            - containerPort: 8080
-```
-
-pod:
-
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: hello-pod
-  labels:
-    app: web
-spec:
-  containers:
-    - name: web-ctr
-      image: path/getting-started-k8s:1.0
-      ports:
-        - containerPort: 8080
-```
-
-## Creating Services
+## Services
 
 ### Create a Service Imperatively
 
@@ -223,49 +181,48 @@ config file for service:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ps-nodeport
+  name: ps-nodeport # the name here gets registered with the cluster DNS
 spec:
   type: NodePort
   ports:
-    - port: 80
-      targetPort: 8080
-      nodePort: 31111
+    - nodePort: 31111 # service port outside the cluster
+      port: 80 # service port inside the cluster
+      targetPort: 8080 # target port of pod inside the cluster
       protocol: TCP
   selector:
-    app: web
+    app: web # will only hook to pods with matching labels
 ```
 
 a note on `spec.type` above: there are three options:
 
-1. `ClusterIP` (default): gives a stable IP within the cluster (service is only available within the cluster).
-2. `NodePort`: builds on ClusterIP and adds a port number, allowing for access from outside the cluster.
-3. `LoadBalancer`: builds on ClusterIP and NodePort, allowing for external access via your cloud provider's load balancer.
+1. `ClusterIP` (default): service is only available within the cluster.
+2. `NodePort`: allows for access from outside the cluster.
+3. `LoadBalancer`: allows for external access via your cloud provider's load balancer.
 
-Request flow: there are multiple worker nodes listening publicly on port `31111`. An external service hits that port. One of the worker nodes forwards this request to the service, which is sitting at the autogenerated ClusterIP at port `80` inside the cluster. Recall that the service oversees pods. One of the pods has a container app listening to port `8080`. The service forwards the request to that app.
+Request flow:
 
-`spec.selector.app` is a list of labels that has to match the labels on the pod we deployed earlier. You can check labels on a pod with the following command:
-
-```
-kubectl get pods --show-labels
-```
+- there are multiple worker nodes listening publicly on port `31111`. A request hits that port.
+- one of the worker nodes forwards this request to the service, which is listening on port `80` inside the cluster.
+- the service forwards to a pod listening on port `8080`.
 
 to deploy the svc-nodeport.yml file:
 
 ```
 kubectl apply -f svc-nodeport.yml
-```
-
-once deployed, check the service (note `Endpoints`: this shows a list of healthy pod IPs that match the label selector):
-
-```
 kubectl describe svc ps-nodeport
 ```
+
+describe is good for troubleshooting--verify `Endpoints` has a value; this shows a list of pods that the Service is connected to. If the list is empty, the service is not connected to any pods.
 
 you can also check the endpoints directly with the following:
 
 ```
 kubectl get ep
 ```
+
+troubleshooting tip: make sure the port, labels, DNS, and namespace are correct on the Service definition.
+
+note that if `targetPort` is not specified on the service, it will default to the value set in `port`.
 
 ### Create a Cloud Load Balancer Service
 
@@ -299,9 +256,16 @@ kubectl get svc
 
 note that the load balancer automatically assigns a public IP.
 
-## Creating Deployments
+## Deployments
 
-deployments are a k8s resource.
+Deployments hold replica sets which manage pods:
+
+- deployment controller:
+  - watches api server for new deployments.
+  - implements deployments.
+  - constantly compares observed state with desired state.
+- replica sets:
+  - replica count, self-healing, old versions
 
 deployments handle rollouts and rollbacks. Replica sets handle reliability and scaling.
 
@@ -336,58 +300,18 @@ spec:                                  # |
             - containerPort: 8080          # |
 ```
 
-note that the deployment spec contains the deployment spec, the pod spec, and the container spec. The pod spec contains the pod spec and the container spec. The container spec contains the container spec.
+- `spec.replicas` defines the number of pods.
+- `spec.selector.matchLabels` should match `spec.template.metadata.labels`. It is how the deployment knows which pods to work on during things like rolling updates. The label at `metadata.labels` is for the deployment itself.
+- `spec.template.spec.containers.imagePullPolicy` set to `Always` means it will always pull from the registry instead of locally, which can protect against malicious attacks where someone puts an image with the same name locally.
 
-- `spec.replicas` defines the number of identical pods/containers defined at `spec.template.spec.containers`.
-- `spec.selector.matchLabels` is how the deployment knows which pods to work on during things like rolling updates. It has to match the labels in `spec.template.metadata.labels`. Note that the top label at `metadata.labels` is overall less important, and is used for CLI tools for grouping, etc.
-- `spec.template.spec.containers.imagePullPolicy` set to `Always` means it will always pull from the registry instead of locally, which protects against malicious attacks where someone puts an image with the same name locally.
-
-### Deploying Deployments
-
-say we created the load balancer service from earlier:
-
-```
-kubectl apply -f svc-lb.yml
-```
-
-now we can apply the deployment:
+apply the deployment:
 
 ```
 kubectl apply -f deploy.yml
+kubectl get deploy,rs,pods
 ```
 
-this will have created 5 pods, all running the same image:
-
-```
-kubectl get pods
-```
-
-to inspect the deployment and replica sets:
-
-```
-kubectl get deploy
-kubectl get rs
-```
-
-the replica set name will be the name of the deployment followed by a hash of the pod spec.
-
-if we now look at the load balancer service:
-
-```
-kubectl describe svc ps-lb
-```
-
-we can see that the `Selector` field shows the correct label. Verify the label on the pods:
-
-```
-kubectl get pods --show-labels
-```
-
-see the endpoints directly here:
-
-```
-kubectl describe ep ps-ls
-```
+this will have created 5 pods, all running the same container. The replica set name will be the name of the deployment followed by a hash of the pod spec.
 
 ### Self-Healing
 
@@ -397,7 +321,7 @@ use `kubectl get pods` and copy a pod name, then run:
 kubectl delete pod <pod-name>
 ```
 
-if you run `kubectl get pods` soon thereafter, you will notice there are still 5 pods due to the replica set self-healing. The same will happen if nodes are deleted; the pods the node holds will be deleted, but the replica set will work with the cloud provider to provision the number of specified nodes, then will spin up the specified number of pods in `deploy.yml`.
+if you run `kubectl get pods` soon thereafter, you will notice there are still 5 pods due to the replica set self-healing.
 
 ### Scaling
 
@@ -421,12 +345,14 @@ spec:
     matchLabels:
       app: web
   replicas: 10
-  minReadySeconds: 5
+  minReadySeconds: 5 # how long a new pod needs to be running before being considered healthy and the next pods are terminated/spun up.
+  progressDeadlineSeconds: 60 # num seconds to wait before considering the pod to be stalled.
+  revisionHistoryLimit: 5 # num of replica sets that can be rolled back. So this can be rolled back to 5 versions ago.
   strategy:
-    type: RollingUpdate
+    type: RollingUpdate # (Default) will update the pods one at a time any time the pod spec is updated, as opposed to all at once.
     rollingUpdate:
-      maxUnavailable: 0
-      maxSurge: 1
+      maxUnavailable: 0 # how many pods below `spec.replicas` can we go. In this case, we cannot go below 10 pods
+      maxSurge: 1 # how many pods above `spec.replicas` can we go. In this case, we can go up to 11 pods
   template:
     metadata:
       labels:
@@ -441,16 +367,12 @@ spec:
             - containerPort: 8080
 ```
 
-- `spec.strategy.type` set to `RollingUpdate` will update the pods one at a time any time the pod spec is updated, as opposed to all at once.
-  - `maxUnavailable` says how many pods below `spec.replicas` can we go. In this case, we cannot go below 10 pods.
-  - `maxSurge` says how many pods above `spec.replicas` can we go. In this case, we can go up to 11 pods.
-- `spec.minReadySeconds` is how long a new pod needs to be running before the next pod is terminated/spun up.
-
-run the deployment:
-
 ```
 kubectl apply -f deploy.yml
+kubectl annotate deployment <name> kubernetes.io/change-cause="<change-details>" --overwrite=true
 ```
+
+the annotation isn't strictly required but makes it a lot easier to roll back if needed.
 
 to watch pods as they're added/removed:
 
@@ -500,7 +422,206 @@ kubectl rollout undo deploy web-deploy --to-revision <number>
 
 a rollback is simply a rollout in reverse.
 
-## Using Storage
+## Blue/Green Deployments
+
+blue/green deployments in Kubernetes require 3 services: the blue service, the green service, and the public service. The blue and green services will both be private, showing what both environments look like to devs and the business. the public service is how the public interfaces with the application.
+
+say the public service is pointing towards pods app-v1, created by deployment deployment-v1. The blue service also points towards the app-v1 pods, aka it will look exactly the same as the public service. The green service points towards the app-v2 pods created by the deployment deployment-v2. When v2 of the app is ready, the public service switches over to point at the app-v2 pods, and the blue service can now be used for further development.
+
+blue deployment:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy-blue
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: myapp
+      env: blue
+  template:
+    metadata:
+      labels:
+        app: myapp
+        env: blue
+    spec:
+      containers:
+        - name: myapp
+          image: myapp:1.0
+          ports:
+            - containerPort: 80
+```
+
+blue service:
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-blue
+spec:
+  type: LoadBalancer
+  selector:
+    app: myapp
+    env: blue
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+```
+
+green deployment:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy-green
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: myapp
+      env: green
+  template:
+    metadata:
+      labels:
+        app: myapp
+        env: green
+    spec:
+      containers:
+        - name: myapp
+          image: myapp:2.0
+          ports:
+            - containerPort: 80
+```
+
+green service:
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-green
+spec:
+  type: LoadBalancer
+  selector:
+    app: myapp
+    env: green
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+```
+
+public service:
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-public
+spec:
+  type: LoadBalancer
+  selector:
+    app: myapp
+    env: blue # change to green when ready
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+```
+
+once the public service yaml has been updated to point towards the new environment, simply apply:
+
+```
+kubectl apply -f public-service.yaml
+```
+
+## Canary Deployments
+
+canary deployments run in parallel to the stable prod deployment. A subset of traffic is routed to the canary in order to verify stability before rolling the changes out to all users.
+
+say we have a deployment deploy-stable, with pods pod-stable, and deployment deploy-canary with pods pod-canary. There is a single service that routes traffic to both the stable pods as well as the canary pods.
+
+service:
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-stable
+  labels:
+    app: myapp
+spec:
+  type: LoadBalancer
+  selector:
+    app: myapp # selects all pods
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+```
+
+stable deployment:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy-stable
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: myapp
+      track: stable
+  template:
+    metadata:
+      labels:
+        app: myapp # referenced by service
+        track: stable
+    spec:
+      containers:
+        - name: myapp
+          image: myapp:1.0
+          ports:
+            - containerPort: 80
+```
+
+canary deployment:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy-canary
+spec:
+  replicas: 1 # note 1 instead of 4, meaning 20% of the traffic
+  selector:
+    matchLabels:
+      app: myapp
+      track: canary
+  template:
+    metadata:
+      labels:
+        app: myapp # referenced by service
+        track: canary
+    spec:
+      containers:
+        - name: myapp
+          image: myapp:1.1
+          ports:
+            - containerPort: 80
+```
+
+the number of replicas in each deployment determines the percentage of traffic routed to each.
+
+note that this will randomly assign users to a potentially different pod every time they refresh the page.
+
+## Storage: PersistentVolume, PersistentVolumeClaim, StorageClass
 
 the Kubernetes Persistent Volume Subsystem decouples data from application pods. Pods access the volume, but if the pod or cluster is stopped or deleted, the volume remains. This means that the volume does live within the cluster itself.
 
@@ -597,7 +718,7 @@ spec:
 
 ### Dynamic Provisioning
 
-StorageClasses (sc) prevent the need to explicitly create pv's; when `volumeBindingMode: WaitForFirstConsumer` is defined on the sc, and when a pvc exists, if a pod is deployed that references the pvc, the corresponding pv will be spun up automatically.
+StorageClasses (sc) prevent the need to explicitly create pv's; when `volumeBindingMode: WaitForFirstConsumer` is defined on the sc, and when a pvc exists, if a pod is deployed that references the pvc, the corresponding pv will be spun up automatically. It also typically guarantees that the volume will be spun up in the same zone or region as the pod.
 
 StorageClass:
 
@@ -689,6 +810,8 @@ spec:
 
 if the above sc is in the cluster, and the above ps-scpod.yml file is deployed, a pv resource will be created automatically.
 
+note that if two containers share the same volume, then their mountPaths point to the same file system even if the mountPaths are different.
+
 inspect the pod:
 
 ```
@@ -700,13 +823,13 @@ kubectl describe pod sc-pod
 here are a few patterns for running multiple containers in a single pod:
 
 - the init pattern
-  - one container starts, then once condition is met it spins down and the next container starts.
+  - one container starts, then once condition is met it spins down and the next container starts. e.g. frontend requires backend to spin up first, so an init container pings the backend pod until it is ready, then the init container spins down and the frontend container spins up.
 - the sidecar pattern
   - sidecar container starts just before and runs in parallel with main app container.
 - the adapter pattern
-  - variation on sidecar: helper container that transforms data from the main app container, e.g. take log output from the main app and standardize formatting for external service. Both the main app and the sidecar typically share some sort of storage.
+  - variation on sidecar: helper container that transforms data from the main app container, e.g. take log output from the main app and standardize formatting for external service. Both the main app and the sidecar typically share storage.
 - the ambassador pattern
-  - variation on sidecar: The sidecar acts as a proxy to forward information. The main app usually sends info to a port that the sidecar is listening to, and the sidecar forwards it outside of the pod.
+  - variation on sidecar: The sidecar acts as a proxy to forward information. The main app usually sends info to a port that the sidecar is listening to, and the sidecar forwards it outside of the pod. e.g., the main app connects to a db using a standard localhost port. The ambassador listens on that port, and forwards to the port that the db is listening on.
 
 recall that containers sharing a pod share resources and are deployed together as one unit.
 
@@ -983,7 +1106,7 @@ kind: StorageClass # dynamically provision storage from AWS Elastic Block Store
 apiVersion: storage.k8s.io/v1
 metadata:
   name: finale1-gcp-pd
-provisioner: kubernetes.io/aws-ebs
+provisioner: kubernetes.io/aws-ebs # based on AWS EBS
 volumeBindingMode: WaitForFirstConsumer
 parameters:
   type: io1
@@ -1140,3 +1263,286 @@ spec:
   - A: RBAC.
 - Q: What is the purpose of volumeBindingMode: WaitForFirstConsumer?
   - A: To hold off creating PVs and external assets until a Pod mounts them.
+
+## NetworkPolicies
+
+more info here: https://kubernetes.io/docs/concepts/services-networking/network-policies/
+
+by default, the kubernetes network is wide open. The network _plugin_ implements network policies.
+
+multiple policies can be set.
+
+Traffic not in a policy is implicitly denied--all policies are "allow" rules. There is no way to deny traffic. Meaning if a NetworkPolicy is added to a pod, suddenly no traffic is allowed except that NetworkPolicy's whitelist.
+
+NetworkPolicy example:
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: demo-netpol
+  namespace: example # network policies only apply to a given namespace
+spec:
+  podSelector:
+    matchLabels:
+      project: ckad # match to pods with the label project=ckad
+    policyTypes:
+      - Ingress
+      - Egress
+    ingress:
+      - from: # allow traffic from any pods with the label project=ckad, in the example namespace, on port 9000
+          - podSelector:
+              matchLabels:
+                project: ckad
+            namespaceSelector: # note the lack of a "-" prefix in the yaml here. That is because this is a logical AND. Adding the "-" before "namespaceSelector" would make this a separate, that is, a logical OR.
+              matchLabels:
+                kubernetes.io/metadata.name: example
+        ports:
+          - protocol: TCP
+            port: 9000
+    egress: # allow outgoing traffic on port 9000 to only pods on this network
+      - to:
+          - ipBlock:
+              cidr: 10.0.0.0/24
+        ports:
+          - protocol: TCP
+            port: 9000
+```
+
+`ipBlock` is only used for internal cluster networks.
+
+allow all egress traffic on a namespace:
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-all-egress
+  namespace: example
+spec:
+  policyTypes:
+    - Egress
+  podSelector: {}
+  egress:
+    - {}
+```
+
+```
+kubectl get netpol
+```
+
+## Ingress
+
+recall that services (ClusterIP, NodePort, LoadBalancer) have a 1:1 port mapping. This can be costly when 20 cloud LoadBalancer services are needed. Ingress allows for 1:many through a single cloud load balancer. It sits underneath the load balancer and redirects traffic to the k8s (typically ClusterIP) service.
+
+Example flow:
+
+- example.com/abc is routed to the cloud's load balancer. The load balancer sends the request to Ingress which is able to then send it to the proper ClusterIP Service which is expecting calls at abc.example.com.
+- example.com/xyz is routed to the cloud's load balancer. The load balancer sends the request to Ingress which is able to then send it to the proper ClusterIP Service which is expecting calls at xyz.example.com.
+
+Ingress is only for HTTP/HTTPS.
+
+Ingress uses a single LoadBalancer service on port 80 or 443. An Ingress is made of an object spec and and a controller; the object spec defines the rules and the controller implements them.
+
+important: kubernetes does not ship with a native controller; you have to install one. Some cloud hosted options give you one out of the box. The controller is has the load balancer IP with the public IP address.
+
+install the most common Ingress Controller for nginx (check latest controller version here: https://github.com/kubernetes/ingress-nginx/releases):
+
+```
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.14.3/deploy/static/provider/cloud/deploy.yaml
+```
+
+installing the above controller will create a new namespace called `ingress-nginx`. Contained within that namespace, among other things, will be an ingressclass called ingress-nginx-controller.
+
+```
+kubectl get ingressclass -n ingress-nginx
+```
+
+note the `CONTROLLER` field contains `k8s.io/ingress-nginx`.
+
+ingress classes can be used to install multiple controllers.
+
+Ingress example:
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ckad
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx # name of the IngressClass that holds the Ingress controller
+  rules:
+    - host: www.app.com
+      http:
+        paths:
+          - path: / # on root path of www.app.com
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend # send to frontend ClusterIP Service
+                port:
+                  number: 80
+    - host: dev.app.com
+      http:
+        paths:
+          - path: / # on root path of dev.app.com
+            pathType: Prefix
+            backend:
+              service:
+                name: backend # send to backend ClusterIP Service
+                port:
+                  number: 80
+    - host: app.com
+      http:
+        paths:
+          - path: /abc # specifically on app.com/abc
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend # send to frontend ClusterIP Service
+                port:
+                  number: 80
+          - path: /xyz # specifically on app.com/xyz
+            pathType: Prefix
+            backend:
+              service:
+                name: backend # send to backend ClusterIP Service
+                port:
+                  number: 80
+```
+
+recall that ClusterIP Services each listen on their own IPs at a given port.
+
+```
+kubectl apply -f ingress.yaml
+kubectl get ing
+```
+
+The `ADDRESS` field is the public IP of the load balancer that's been automatically created in the background.
+
+view the routing rules:
+
+```
+kubectl describe ing <ingress-name>
+```
+
+## Jobs and CronJobs
+
+Jobs run a specific number of pods through their lifecycle. Jobs are managed by the jobs controller (in the control plane). Jobs controller allows for restarts, retries, killing long-running processes, cleaning up, etc.
+
+Jobs always try to ensure one or more Pods completes successfully.
+
+Job example:
+
+```yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ckad1
+spec: # job
+  completions: 5 # number of pods
+  parallelism: 1 # number of pods to run at once
+  backoffLimit: 4 # retry cap, uses exponential delay
+  activeDeadlineSeconds: 90 # max duration of the pod lifetime. Pods then terminated. Takes precedence over backoffLimit.
+  ttlSecondsAfterFinished: 90 # job and its resources are deleted after this many seconds. Can be set to 0. If unset, the job will not be cleaned up.
+  template: # pod
+    spec:
+      restartPolicy: Never # other: OnFailure. App code needs to be able to handle local restarts. Setting to Never lets failed pods stick around so you can check their logs.
+      containers: # container
+        - name: ctr
+          image: alpine:latest
+          command: ["sh", "-c", 'echo "waiting..." && sleep 60']
+```
+
+CronJob example:
+
+```yaml
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: ckad1-cron
+spec: # cronjob
+  schedule: "* * * * *"
+  concurrencyPolicy: Allow # governs whether new jobs can start if previous Job instances are running. Options: Allow | Forbid | Replace
+  startingDeadlineSeconds: 90 # if Job does not start this amount of time after the cron schedule, the Job is terminated. Setting to <10 means jobs might be missed.
+  successfulJobsHistoryLimit: 5 # num successful jobs (and associated pods) to keep from previous runs. Default: 3.
+  failedJobsHistoryLimit: 2 # num failed jobs (and associated pods) to keep from previous runs. Default: 1.
+  jobTemplate: # job
+    spec:
+      template: # pod
+        spec:
+          restartPolicy: OnFailure
+          containers: # container
+            - name: ckad-container
+              image: alpine:latest
+              imagePullPolicy: IfNotPresent
+              command:
+                - /bin/sh
+                - -c
+                - echo "Hello world"; sleep 600
+```
+
+run:
+
+```
+kubectl apply -f job1.yml
+kubectl get jobs
+kubectl get pods
+```
+
+note that the pods are named after the job, and the pods will have labels like `controller-uid=<job-conroller-id>`.
+
+show all job details including completion status, num of successful pods, and which pods are owned by the job:
+
+```
+kubectl describe job ckad1
+```
+
+deleting the job will delete the pods:
+
+```
+kubectl delete job ckad1
+kubectl get pods
+```
+
+CronJobs run Jobs on a schedule.
+
+cron format: `<minute> <hour> <day-of-month> <month> <day-of-week>`
+
+e.g.:
+
+- `0 4 * * 6` => 04:00 every Saturday
+- `0 0 1 * *` => 00:00 (midnight) on the first day of every month
+- `* * * * *` => every minute
+- `*/2 * * * *` => every 2 minutes
+
+important:
+
+- CronJobs work on the timezone based on the k8s control plane API Server.
+- CronJobs only wake up every 10 seconds and chekcs for tasks it missed.
+- CronJobs only will create up to 100 missed tasks. This includes the time period defined in `startingDeadlineSeconds` (or 10 seconds if not defined). So if `startingDeadlineSeconds` is set to 120, only up to 100 Jobs will be created in that 2min period.
+
+apply:
+
+```
+kubectl apply -f cronjob.yml
+kubectl get cronjobs
+kubectl get jobs
+kubectl get pods
+```
+
+Jobs are named after the CronJob. Pods named after the Job.
+
+Note that CronJobs only need the `schedule` parameter specified, the rest are optional:
+
+```yaml
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: ckad1-cron
+spec: # cronjob
+  schedule: "* * * * *"
+  jobTemplate: # ...
+```
