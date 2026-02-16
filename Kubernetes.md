@@ -75,13 +75,13 @@ useful for ckad exam:
 
 note: used to be called "masters".
 
-it is generally considered good practice not to run user apps on control plane nodes.
+do not to run user apps on control plane nodes.
 
 per normal H/A standards, 3 control plane nodes is standard. Do not pick an even number; if there is a split in the network, the side that knows it has the majority nodes will arbitrarily pick a new leader. If there are an even number on each side, the nodes will deadlock and go into read-only mode.
 
 on a hosted kubernetes platform, the control plane is hidden from you and is instead managed by the cloud provider.
 
-leader: one control plane node makes active changes to the cluster at any one time. The others are called followers. If the leader goes down, they elect a new one.k
+leader: one control plane node makes active changes to the cluster at any one time. The others are called followers. If the leader goes down, they elect a new one.
 
 services that make up the control plane:
 
@@ -101,7 +101,7 @@ services that make up the control plane:
   - reconciles state: ensures that the observed state of the cluster matches the desired state.
 - kube-scheduler:
   - watches the api server for work.
-  - assigns tasks to worker nodes: affinity/anti-afinity, constraints, taints, resources.
+  - assigns tasks to worker nodes: affinity/anti-affinity, constraints, taints, resources.
 
 overview to deploy app:
 
@@ -121,7 +121,7 @@ services that make up the data plane:
   - main kubernetes agent (they also runs on cluster nodes).
   - registers node with the cluster (adding CPU, RAM, and other resources to the overall cluster pool so that the scheduler can intelligently assign work to the kubelet or to the node).
   - watches the api server for work.
-  - executes pods (recall: a pod is one or more container).
+  - executes pods.
   - reports back to the control plane.
 - container runtime:
   - docker used to be baked in, but now the container runtime is pluggable (called the Container Runtime Interface, or CRI).
@@ -235,7 +235,7 @@ metadata:
   name: ps-lb
 spec:
   type: LoadBalancer
-  ports:
+  ports: # LoadBalancer's create an NodePort under the hood, no need to define one.
     - port: 80
       targetPort: 8080
   selector:
@@ -345,14 +345,14 @@ spec:
     matchLabels:
       app: web
   replicas: 10
-  minReadySeconds: 5 # how long a new pod needs to be running before being considered healthy and the next pods are terminated/spun up.
-  progressDeadlineSeconds: 60 # num seconds to wait before considering the pod to be stalled.
-  revisionHistoryLimit: 5 # num of replica sets that can be rolled back. So this can be rolled back to 5 versions ago.
+  minReadySeconds: 5 # how long a new pod needs to be running before being considered healthy and the next pods are terminated/spun up. Default 0.
+  progressDeadlineSeconds: 60 # num seconds to wait before considering the pod to be stalled. Default 600s.
+  revisionHistoryLimit: 5 # num of replica sets that can be rolled back. So this can be rolled back to 5 versions ago. Default 10.
   strategy:
-    type: RollingUpdate # (Default) will update the pods one at a time any time the pod spec is updated, as opposed to all at once.
+    type: RollingUpdate # will update the pods one at a time any time as opposed to all at once. Default RollingUpdate.
     rollingUpdate:
-      maxUnavailable: 0 # how many pods below `spec.replicas` can we go. In this case, we cannot go below 10 pods
-      maxSurge: 1 # how many pods above `spec.replicas` can we go. In this case, we can go up to 11 pods
+      maxUnavailable: 0 # how many pods below `spec.replicas` can we go. In this case, we cannot go below 10 pods. Default 25%.
+      maxSurge: 1 # how many pods above `spec.replicas` can we go. In this case, we can go up to 11 pods. Default 25%.
   template:
     metadata:
       labels:
@@ -368,11 +368,15 @@ spec:
 ```
 
 ```
-kubectl apply -f deploy.yml
+kubectl create -f deploy.yml --save-config
 kubectl annotate deployment <name> kubernetes.io/change-cause="<change-details>" --overwrite=true
 ```
 
-the annotation isn't strictly required but makes it a lot easier to roll back if needed.
+the annotation isn't strictly required but makes it a lot easier to roll back if needed. To see annotations metadata under `metadata.annotations`:
+
+```
+kubectl get deploy <name> -o yaml
+```
 
 to watch pods as they're added/removed:
 
@@ -388,39 +392,37 @@ kubectl rollout status deploy web-deploy
 
 note: if you begin to try and access the pods (say they're hosting a frontend or something) during the deployment, you will randomly begin to see both the old and new version.
 
+see history of what happened during the deployment:
+
+```
+kubectl describe deployment <name>
+```
+
 ### Rollbacks
 
-recall that old replica sets stick around (you can see which one is newer with the `AGE` field):
+get status of a deployment (success, failure, updating, etc.):
 
 ```
-kubectl get rs
+kubectl rollout status -f <deployment>.yaml
 ```
 
-see rollout history and revision numbers:
+get history of deployments:
 
 ```
-kubectl rollout history deploy web-deploy
+kubectl rollout history
 ```
 
-to rollback, check the replica sets and note the hashes:
+get history about a deployment, optionally add revision:
 
 ```
-kubectl get rs
+kubectl rollout history deployment <name> [--revision=<number>]
 ```
 
-check the revision details to find the hash:
+rollback a deployment, optionally add revision number otherwise defaults to going back to the previous revision:
 
 ```
-kubectl rollout history deploy web-deploy --revision=<number>
+kubectl rollout undo -f <deployment>.yaml [--to-revision=<number>]
 ```
-
-rollback to the desired revision:
-
-```
-kubectl rollout undo deploy web-deploy --to-revision <number>
-```
-
-a rollback is simply a rollout in reverse.
 
 ## Blue/Green Deployments
 
@@ -1545,4 +1547,376 @@ metadata:
 spec: # cronjob
   schedule: "* * * * *"
   jobTemplate: # ...
+```
+
+## Helm
+
+install: https://helm.sh/docs/intro/install/
+
+Helm is a package manager for Kubernetes. Helm installs charts, creating a new release for each install (not idempotent). Search Helm chart repositories to find new charts.
+
+- helm client: cli for end users
+- helm library: logic for executing operations
+
+Helm Chart: used to create an instance of a k8s app. use charts to install, upgrade, and uninstall k8s apps.
+Config: can be merged into a packaged chart to create a releasable object.
+
+general workflow:
+
+- `helm -h` - help
+- `helm search hub` - view repos, defaults to Artifact Hub
+- `helm repo add`
+- `helm search repo`
+- `heml show values` or `heml pull --untar` to dig into the files
+- `helm values` - override defaults
+- `helm install`, `helm upgrade`, `helm uninstall`
+- `helm status`
+- `helm list`
+
+### Examples
+
+search and install:
+
+```sh
+helm search hub nginx --list-repo-url -o yaml # look for app_version and repo url
+helm repo add bitnami https://charts.bitnami.com/bitnami
+
+helm repo list
+helm search repo nginx # shows app version and chart version
+helm show values bitnami/nginx
+
+helm install my-nginx bitnami/nginx # installs with default template values
+
+kubectl get all # show resources created by helm
+
+helm list
+helm uninstall my-nginx
+```
+
+untar and override default values with yaml:
+
+```sh
+helm pull --untar --version=15.0.9 bitnami/wordpress # adds a wordpress dir
+
+cd wordpress
+ls -l
+cat Chart.yaml
+cd ..
+helm show values bitnami/wordpress --version=15.0.9 # shows values to override
+
+nano wordpress-values.yaml # create new file with values:
+# wordpressUsername: admin
+# wordpressPassword: admin
+# wordpressEmail: admin@admin.com
+# wordpressFirstName: Jane
+# wordpressLastName: Doe
+# wordpressBlogName: admin.com
+# service:
+#   type: LoadBalancer
+
+helm install my-wordpress bitnami/wordpress --values=wordpress-values.yaml -n dev --version=15.0.9 # add to the dev namespace
+
+kubectl get all -n dev
+
+helm uninstall my-wordpress -n dev
+```
+
+update repos, override default values inline, upgrade helm chart:
+
+```sh
+helm list -n dev
+helm repo list
+helm repo update # update all repos
+
+helm search repo nginx --version=13.1.5 # find the pre-installed repo
+helm show values bitnami/nginx --version=13.1.5 | grep replica # search for name of parameter to override
+
+helm install my-app bitnami/nginx --version=13.1.5 -n dev --set replicaCount=5 # override default replicaCount
+
+kubectl get pods -n devs # 5 pods created
+
+helm upgrade my-app bitnami/nginx --version=13.1.8 -n dev # upgrade to 13.1.8
+helm list -n dev # note the upgraded version number, and revision now equals 2
+
+kubectl get pods -n dev
+
+helm uninstall my-app -n dev
+```
+
+## Probes and Health Checks
+
+Health Check: determine if app/service is functioning
+Probe: diagnostic mechanism used by kubelet to determine container health
+
+types of probes:
+
+- startup:
+  - verifies the app on the container has started.
+  - runs at startup until the probe succeeds or fails, then stops running.
+  - other probes are disabled until the startup probe succeeds.
+  - used for containers that take a long time to start (databases, VMs).
+- readiness:
+  - determines if endpoints can receive requests.
+  - runs during container's lifecycle.
+  - if fails, removes pod from service.
+- liveness:
+  - determines if pod is healthy.
+  - if fails, destroys pod and creates new one based on `restartPolicy`.
+  - does not wait for readiness probes.
+  - used for containers that can experience deadlocks or become unresponsive.
+
+probes can return success, failure, or unknown (treated as failure, generally caused by a timeout).
+
+handler options on pods for probes to check health:
+
+- `httpGet` for web apps with a health endpoint
+- `tcpSocket` for services with raw TCP endpoints
+- `exec` for apps where state can only be verified internally
+
+example with `httpGet`:
+
+```yaml
+# ...
+spec:
+  containers:
+    - name: web-app
+      image: nginx:latest
+      readinessProbe:
+        httpGet:
+          path: /health
+          scheme: http
+          port: 80
+        initialDelaySeconds: 2 # how long in seconds before probe runs
+        periodSeconds: 5 # how often probe checks
+        timeoutSeconds: 5 # how long probe will wait before timeout
+        failureThreshold: 2 # how many times a probe can fail before a Failure condition occurs
+        successThreshold: 2 # how many times a probe can succeed before a Success condition occurs
+        terminationGracePeriodSeconds: 20 # time between requested shutdown and actual shutdown
+```
+
+check pod for health check failures:
+
+```
+kubectl describe pod my-pod
+```
+
+at the bottom will be `Events`. Health check successes won't log, but failures will with `Warning Unhealthy`.
+
+troubleshooting:
+
+- check probe configuration
+- check events: `kubectl describe pod <pod-name>`
+- check cluster events: `kubectl get events --sort-by='.lastTimestamp'`
+- check logs: `kubectl logs <pod-name> [-c <container-name>]`
+
+## ConfigMaps
+
+ConfigMaps:
+
+- store key-value pairs for configuration.
+- require the pod to restart for changes to populate.
+- are scoped to namespace.
+- values can be multiline.
+- values must be under 1MB.
+- can be used as an argument, env var, or file.
+- used for env config, feature flags, etc.
+
+example:
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  APP_MODE: production
+  LOG_LEVEL: debug
+binaryData:
+  config.bin: | # base64
+    U29tZSBiaW5hcnkgY29...
+```
+
+create imperatively:
+
+```sh
+kubectl create configmap app-config --from-literal=APP_MODE=production --from-literal=LOG_LEVEL=debug
+```
+
+imperative dump to yaml:
+
+```sh
+kubectl create configmap app-config --from-literal=APP_MODE=production --from-literal=LOG_LEVEL=debug --dry-run=client -o yaml > configmap.yaml
+```
+
+create from file:
+
+```sh
+kubectl create configmap app-config --from-file=startup.sh
+```
+
+view/describe:
+
+```sh
+kubectl get configmaps
+kubectl describe configmap <name>
+```
+
+ref ConfigMap in Pod:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pod
+spec:
+  containers:
+    - name: myapp
+      image: busybox
+      command: ["sh", "-c", "env"]
+      envFrom: # full
+        - configMapRef:
+          name: app-config
+```
+
+or overwrite specific values:
+
+```yaml
+# ...
+spec:
+  containers:
+    - name: myapp
+      image: busybox
+      command: ["sh", "-c", "env"]
+      env: # partial
+        - name: loglevel
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: LOG_LEVEL
+```
+
+get config from a volume (file name is key, file contents is value):
+
+```yaml
+# ...
+spec:
+  containers:
+    - name: myapp
+      image: busybox
+      command: ["sh", "-c", "env"]
+      volumeMounts: # volume
+        - name: config-volume
+          mountPath: "/config"
+          readOnly: true
+      volumes:
+        - name: config-volume
+          configMap:
+            name: app-config
+```
+
+## Secrets
+
+Secrets:
+
+- like ConfigMaps, are scoped to namespaces.
+- can be passed into containers as arguments, env vars, or files.
+- are stored unencrypted in etcd and are assessible by anyone with API access
+  - if this is an issue, consider enabling encryption at rest
+  - use restrictive RBAC policies
+
+example:
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-secret
+type: Opaque
+data:
+  username: YWRtaW4=
+  password: UGE1NXcwcmQ=
+```
+
+`type` options:
+
+- Opaque: arbitrary user-defined data
+- kubernetes.io/service-account-token: service account token
+- kubernetes.io/dockercfg: serialized ~/.dockercfg file data
+- kubernetes.io/dockerconfigjson: serialized ~/.docker/config.json file data
+- kubernetes.io/basic-auth: creds for basic auth
+- kubernetes.io/ssh-auth: creds for ssh auth
+- kubernetes.io/tls: data for a TLS client or server
+- kubernetes.io/token: bootstrap token data
+
+when using the `data` param, content must be pre-encoded:
+
+```sh
+echo -n "encode-this-password" | base64
+```
+
+otherwise the the `stringData` param and k8s will encode for you.
+
+create secrets imperatively:
+
+```sh
+kubectl create secret tls tls-secret --cert=/cert/path --key=/key/path
+```
+
+view/describe:
+
+```sh
+kubectl get secret
+kubectl describe secret db-secret
+```
+
+decode:
+
+```sh
+kubectl get secret db-secret -o jsonpath='{.data.username}' | base64 --decode
+```
+
+Secrets in Pods work just like ConfigMaps:
+
+```yaml
+# ...
+spec:
+  containers:
+    - name: myapp
+      image: busybox
+      command: ["sh", "-c", "env"]
+      envFrom: # full
+        - secretRef:
+          name: db-credentials
+```
+
+```yaml
+# ...
+spec:
+  containers:
+    - name: myapp
+      image: busybox
+      command: ["sh", "-c", "env"]
+      env: # partial
+        - name: DB_USER
+          valueFrom:
+            configMapKeyRef:
+              name: db-credentials
+              key: username
+```
+
+```yaml
+# ...
+spec:
+  containers:
+    - name: myapp
+      image: busybox
+      command: ["sh", "-c", "env"]
+      volumeMounts: # volume
+        - name: secret-volume
+          mountPath: "/etc/secret"
+          readOnly: true
+      volumes:
+        - name: secret-volume
+          configMap:
+            name: db-credentials
 ```
