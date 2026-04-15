@@ -16,7 +16,112 @@ Make sure you're logged into Azure CLI and have proper permissions to pull resou
 aztfexport resource-group --include-role-assignment rg-myproject
 ```
 
-This will create the main.tf, provider.tf, and terraform.tf files for you.
+After a few minutes, you will be presented in the command line with resources that will be created. If you're importing a Log Analytics resource, you may encounter multiple `azurerm_log_analystics_saved_search` resources--these should be skipped. You can do so by pressing `/` to filter and searching "saved". Then scroll down and enter the `delete` key for each item to skip it. Once all resources have been verified, enter `w` to create the main.tf terraform file. The `aztfexportResourceMapping.json` and `aztfexportSkippedResources.txt` files can be deleted.
+
+Note: You will have to manually resolve many references. Any resource with a `depends_on` block likely needs to be updated to point to the terraform resource, and the `depends_on` block can likely be deleted.
+
+For example, this...:
+
+```terraform
+resource "azurerm_resource_group" "rg-myproject" {
+  name     = "rg-myproject-dev"
+  # ...
+}
+
+resource "azurerm_container_app" "ca-blogchecker" {
+  resource_group_name = "rg-myproject-dev"
+  # ...
+  depends_on {
+    azurerm_resource_group.rg-myproject
+  }
+}
+```
+
+...can be updated to this:
+
+```terraform
+resource "azurerm_resource_group" "rg-myproject" {
+  name     = "rg-myproject-${var.env}"
+  # ...
+}
+
+resource "azurerm_container_app" "ca-blogchecker" {
+  resource_group_name = azurerm_resource_group.rg-myproject.id
+  # ...
+}
+```
+
+Tip: When replacing the auto-generated names ("res-0", "res-1", etc.) with Visual Studio's find and replace, turn on regular expressions and add `(?!\d)` to the end of the search string, e.g. `res-1(?!\d)`. This adds a negative lookahead for digits after the search string which will prevent negative matches, e.g. "res-1" will no longer match with the substring in "res-11", "res-12" etc.
+
+Tip: Personal preference, but copy/paste the contents of the generated `provider.tf` file into `terraform.tf` and delete `provider.tf`. While you're there, in the `required_providers` section add `~> ` to the front of the version number to allow for automatic patch updates.
+
+Some arduous work is needed to resolve the RBAC permissions:
+
+- For app registrations, my preferred method is to manually create the app registration in Azure, then reference the service principal from Terraform.
+- I also prefer to replace the `role_definition_id` field with `role_definition_name` to make the terraform more readable (you can find the mapping of the ids to names by asking ChatGPT "Please tell me the Azure role names of each of these role ids: `<list-of-role-ids>`").
+- Finally, you'll have to add the `azuread` provider to the `terraform` block:
+
+```terraform
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 4.33.0"
+    }
+    azuread = {
+      source = "hashicorp/azuread"
+      version = "~> 3.5.0"
+    }
+  }
+
+  # ...
+}
+
+provider "azurerm" {
+  features {}
+  # ...
+}
+
+provider "azuread" {}
+```
+
+Once the app reg is created and `azuread` provider added, you can update the terraform:
+
+```terraform
+# add this block
+data "azuread_service_principal" "appreg-myproject-cd-sp" {
+  display_name = "appreg-myproject-cd-${var.env}" # this must match the app reg "Name" field in Azure
+}
+
+# update this block
+resource "azurerm_role_assignment" "ra-ca-myproject" {
+  scope              = azurerm_container_app.ca-myproject.id
+  principal_id       = azuread_service_principal.appreg-myproject-cd-sp.object_id
+  role_definition_name = "Container Apps Contributor"
+}
+```
+
+Example managed identity:
+
+```terraform
+resource "azurerm_storage_account" "sa" {
+  # ...
+  identity {
+    type = "SystemAssigned"
+  }
+}
+
+resource "azurerm_key_vault" "kv" {
+  # ...
+  enable_rbac_authorization   = true
+}
+
+resource "azurerm_role_assignment" "kv_secrets_user" {
+  scope                = azurerm_key_vault.kv.id
+  principal_id         = azurerm_storage_account.sa.identity[0].principal_id
+  role_definition_name = "Key Vault Secrets User"
+}
+```
 
 ## Add Snippets Using Key Commands in VS Code
 
