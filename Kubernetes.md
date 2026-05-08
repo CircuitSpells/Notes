@@ -40,6 +40,9 @@ useful commands:
 
 - `kubectl cluster-info` (see if kubectl is connected to a cluster)
   - also: `kubectl config view` (get info from `~/.kube/config`)
+- `kubectl config get-contexts` (see all contexts)
+  - `kubectl config current-context` (get current context)
+  - `kubectl config use-context <cluster-name>` (switch contexts)
 - `kubectl get pods -A` (see all pods in all namespaces)
 - `kubectl get all -n default` (see all resources in the default namespace)
 - `kubectl delete all -l app=<name> -n default` (delete all resources with the label `app=<name>` in the default namespace)
@@ -61,11 +64,13 @@ useful commands:
   - specify container: `kubectl logs <pod-name> -c <container-name>`
 - `kubectl config set-context --current --namespace=<namespace-name>` (switch namespaces. see available namespaces with `kubectl get namespace`)
 - `kubectl port-forward <pod-name> <desired-port>:<pod-port> &` (port forward your localhost to a port the pod is listening on)
+- `az aks get-credentials --resource-group <rg> --name <aks-name>` (connect kubectl to aks instance)
+  - or: `az aks get-credentials -g <rg> -n <aks-name>`
 
 useful for ckad exam:
 
 - `kubectl create deploy <deploy-name> --image=<image>:<tag> --dry-run=client -o yaml > <file-name>.yaml` (creates a new deployment file)
-- `kubectl create -f <path-to-files>` (create all resources in the directory. Can also use `apply` insted.)
+- `kubectl create -f <path-to-files>` (create all resources in the directory. Can also use `apply` instead.)
 - `kubectl set selector svc <service-name> 'key=value'` (update a service to point at pods with a certain label)
 - `kubectl scale deploy <deployment-name> --replicas=<num-replicas>` (update a deployment to a new number of replicas)
 - `kubectl set image deploy <deployment-name> <image-name>` (update a deployment to use a different image)

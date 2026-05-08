@@ -1,5 +1,11 @@
 # Git
 
+## Terminology
+
+- `HEAD`: most recent commit.
+- `Index`: staging area; what will be committed next.
+- `Working Tree`: your actual files on disk.
+
 ## Basic CLI Operations
 
 ### git init
@@ -195,11 +201,31 @@ git remote -v
 
 ### git diff
 
-> note: git requires the program `less` to use diff. If it is not installed, run the following, then close and reopen the terminal so that it references the updated PATH:
->
-> ```
-> winget install jftuga.less
-> ```
+> note: git requires the program `less` to use diff.
+
+view diff of working tree relative to index (staging area):
+
+```
+git diff
+```
+
+view diff of index relative to HEAD:
+
+```
+git diff --staged
+```
+
+view diff of working tree + index (i.e. all uncommitted changes) relative to HEAD:
+
+```
+git diff HEAD
+```
+
+view diff of working tree + index (i.e. all uncommitted changes) relative to main:
+
+```
+git diff main
+```
 
 view diff of a file:
 
@@ -207,16 +233,21 @@ view diff of a file:
 git diff <path-to-file>
 ```
 
-view diff of all files:
+view diff files in the current directory:
 
 ```
 git diff .
 ```
 
-diff between main and your feature branch:
+diff between the tip of main and HEAD of a feature branch:
 
 ```
 git diff <main-branch>..<feature-branch>
+```
+
+or if you're already on the feature branch, simply:
+```
+git diff main
 ```
 
 diff between main and your feature branch (specify path):
@@ -225,7 +256,7 @@ diff between main and your feature branch (specify path):
 git diff <main-branch>..<feature-branch> -- <directory-or-file-path>
 ```
 
-diff between main branch and feature branch, but only compare the tip commits between both branches (note the three dots `...`):
+diff between the tip of your feature branch and the base commit on main where the feature branch had branched from (note the three dots `...`):
 
 ```
 git diff <main-branch>...<feature-branch>
@@ -300,8 +331,10 @@ merge branchB into branchA:
 ```
 git switch branchA
 git pull
-git merge branchB
+git merge branchB --no-edit
 ```
+
+`--no-edit` uses the automatic commit message, otherwise you can use `-m "my message..."`
 
 > or, optionally:
 >
