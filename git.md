@@ -304,6 +304,12 @@ view diff of working tree + index (i.e. all uncommitted changes) relative to HEA
 git diff HEAD
 ```
 
+view diff of current commit relative to the past N commits on the current branch:
+
+```
+git diff HEAD~<N>
+```
+
 view diff of working tree + index (i.e. all uncommitted changes) relative to main:
 
 ```
