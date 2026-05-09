@@ -6,6 +6,39 @@
 - `Index`: staging area; what will be committed next.
 - `Working Tree`: your actual files on disk.
 
+## Setup
+
+to set up GitHub auth on a new linux machine:
+
+generate ssh token:
+
+```
+ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519_<some-name-you-choose> -C "<email>"
+```
+
+> e.g. `ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519_personal -C "personal@example.com"`
+
+you will be prompted for an optional passphrase. This will be required for every shell session if you choose to make one.
+
+start ssh agent and add token:
+
+```
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519_<the-name-you-chose>
+```
+
+copy the contents of `~/.ssh/id_ed25519_<the-name-you-chose>.pub` (note the ".pub") to your clipboard.
+
+log into your GitHub account:
+
+- click your profile picture in the top right
+- select settings
+- select "SSH and GPG keys"
+- select "New SSH key"
+- give a descriptive title, set Key type to "Authentication Key", and paste the key contents into the Key field.
+- select "Add SSH key"
+- complete verification steps
+
 ## Basic CLI Operations
 
 ### git init
@@ -139,6 +172,12 @@ pull remote changes into your local branch:
 git pull
 ```
 
+pull changes from upstream branch:
+
+```
+git pull upstream <branch-name>
+```
+
 ### git branch
 
 view local branches:
@@ -193,10 +232,22 @@ git branch --contains <commit-hash>
 
 ### git remote
 
-view remote origin branch:
+view remote origin and upstream branch:
 
 ```
-git remote -v
+git remote -vv
+```
+
+set origin repo (should be set automatically when you clone):
+
+```
+git remote set-url origin https://github.com/<OwnerName>/<RepoName>.git
+```
+
+set upstream repo (to pull updates from a fork):
+
+```
+git remote add upstream https://github.com/<OwnerName>/<RepoName>.git
 ```
 
 ### git diff
