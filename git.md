@@ -8,9 +8,9 @@
 
 ## Setup
 
-to set up GitHub auth on a new linux machine:
+to set up GitHub auth on a Linux machine:
 
-generate ssh token:
+generate an ssh token:
 
 ```
 ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519_<some-name-you-choose> -C "<email>"
@@ -31,13 +31,45 @@ copy the contents of `~/.ssh/id_ed25519_<the-name-you-chose>.pub` (note the ".pu
 
 log into your GitHub account:
 
-- click your profile picture in the top right
-- select settings
-- select "SSH and GPG keys"
-- select "New SSH key"
+- click your profile picture in the top right.
+- select settings.
+- select "SSH and GPG keys".
+- select "New SSH key".
 - give a descriptive title, set Key type to "Authentication Key", and paste the key contents into the Key field.
-- select "Add SSH key"
-- complete verification steps
+- select "Add SSH key".
+- complete verification steps.
+
+create a file called `config` in the `~.ssh/` directory and add a Host like so:
+
+```
+Host <a-hostname-you-choose>
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_ed25519_<the-name-you-chose>
+    IdentitiesOnly yes
+```
+
+add the identity to known-hosts:
+
+```
+ssh -T git@<the-hostname-you-chose>
+```
+
+when prompted to continue connecting, type `yes` and enter. You should get a message saying you've successfully authenticated, but GitHub does not provide shell access.
+
+go to your repo directory and update the origin url:
+
+```
+git remote set-url origin git@<the-hostname-you-chose>:<github-username>/<repo-name>.git
+```
+
+verify origin was updated:
+
+```
+git remote -vv
+```
+
+you can now do git operations on the remote branch! Repeat this process for any additional GitHub accounts you need access to.
 
 ## Basic CLI Operations
 
