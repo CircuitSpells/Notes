@@ -273,13 +273,13 @@ git remote -vv
 set origin repo (should be set automatically when you clone):
 
 ```
-git remote set-url origin https://github.com/<OwnerName>/<RepoName>.git
+git remote set-url origin https://github.com/<github-username>/<repo-name>.git
 ```
 
 set upstream repo (to pull updates from a fork):
 
 ```
-git remote add upstream https://github.com/<OwnerName>/<RepoName>.git
+git remote add upstream https://github.com/<github-username>/<repo-name>.git
 ```
 
 ### git diff
