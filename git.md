@@ -220,10 +220,31 @@ pull remote changes into your local branch:
 git pull
 ```
 
-pull changes from upstream branch:
+pull changes from a remote branch (such as an upstream fork):
 
 ```
-git pull upstream <branch-name>
+git pull <remote-name> <branch-name>
+# e.g.
+# git pull upstream main
+```
+
+rebase local commits on top of pull (instead of creating a merge commit, allows for cleaner git history):
+
+```
+git pull --rebase
+```
+
+auto stash local changes, then reapply them after the rebase (merge conflicts will need to be resolved manually):
+
+```
+git pull --rebase --autostash
+```
+
+set the above as the default behavior globally:
+
+```
+git config --global pull.rebase true
+git config --global rebase.autoStash true
 ```
 
 ### git branch
