@@ -734,7 +734,7 @@ git switch FeatureB
 start an interactive rebase to add the new commits from FeatureB onto FeatureB2:
 
 ```
-git rebase -i FeatureB2
+git rebase --interactive FeatureB2
 ```
 
 this will open a text editor with a list of all the commits between `FeatureB` and `FeatureB2` (which currently shares a HEAD with `main`), something like this:
@@ -756,6 +756,11 @@ pick c619268 more changes
 ```
 
 save and close the editor. git will start the rebase, and will drop the commits where you replaced `pick` with `drop`. then, make a PR for `FeatureB2` into `main`.
+
+## Helpful Extras
+
+- never rebase commits that have already been pushed.
+- never use `git push --force` as it can rewrite history. However, if it is on your own personal feature branch then it is typically okay. A safer option is `git push --force-with-lease` which will fail if it will change someone else's commits.
 
 ## Conventional Commits
 
@@ -780,3 +785,4 @@ commit elements:
 3. `BREAKING CHANGE:` _is placed at the beginning of the optional body_, and correlates with MAJOR in semantic versioning. This can be added to a commit of any type.
 
 4. Others: `chore:`, `docs:`, `style:`, `refactor:`, `perf:`, `test:`, and others. A scope may be provided to a commit’s type, e.g., `feat(parser): add ability to parse arrays`.
+
