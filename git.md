@@ -703,6 +703,12 @@ git update-index --no-assume-unchanged <directory-or-file-path>
 - never rebase commits that have already been pushed.
 - view common ancestor commit: `git merge-base branch1 branch2` (note that this might not work if certain combinations of merging, rebasing, and cherry-picking occurred).
 - never use `git push --force` as it can rewrite history. However, if it is on your own personal feature branch then it is typically okay. A safer option is `git push --force-with-lease` which will fail if it will change someone else's commits.
+- to add a local repo to GitHub (requires the gh CLI and first running `gh auth login`):
+```
+gh repo create --private --source=. --remote=origin
+git push -u --all
+gh browse
+```
 
 ### Cherry Picking Strategy
 
