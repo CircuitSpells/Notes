@@ -182,6 +182,22 @@ commit staged files to local branch:
 git commit -m "commit message"
 ```
 
+amend last commit (apply staged changes to most recent commit):
+
+```
+git commit --amend
+```
+
+edit last commit message:
+
+```
+git commit --ammend -m "new commit message"
+```
+
+> note: only use --ammend if you have not yet pushed the latest commit, otherwise --force-with-lease will be required.
+
+> note: in order to edit commits older than the most recent, see details for `git rebase --interactive` wit the 'edit' option.
+
 ### git push
 
 push to local branch:
@@ -430,6 +446,59 @@ git merge branchB --no-edit
 > ```
 > git merge --squash branchB
 > ```
+
+### git rebase
+
+rebase a feature branch onto main:
+
+```
+git switch main && git pull
+
+git switch <feature-branch>
+git rebase main
+# or, alternatively:
+# git rebase main <feature-branch>
+
+# then move main's pointer forward to match the feature commit:
+git switch main
+git merge <feature-branch>
+```
+
+if there are conflicts, you can abort with:
+
+```
+git rebase --abort
+```
+
+#### Interactive Rebase
+
+interactive rebase for the past N commits:
+
+```
+git rebase --interactive HEAD~<N>
+```
+
+> note: before doing a complicated interactive rebase, consider backing up your branch first with `git branch <branch-name>-bak`.
+
+this will open an interactive session to replay the previous N commits, allowing you to make modifications by replacing "pick" with other keywords:
+
+- `pick`: the default option, keeps the commit unchanged.
+- `reword`: edit the commit message.
+- `edit`: pause at this commit so you can change content (update files, split into multiple commits, etc.).
+  - to make file changes: change the desired files, run `git add .`, then `git rebase --continue`.
+  - to split into multiple commits: run `git reset HEAD~1`, then add and commit changes separately, then run `git rebase --continue`.
+- `squash`: combine this commit with the previous one (the commit above it). You'll get a chance to edit the commit message.
+- `fixup`: like `squash`, but discard this commit's message and take the previous commit's message.
+- `drop`: remove the commit.
+
+you can also add `exec` inbetween commits:
+- `exec`: run a shell command, e.g. `exec npm test`.
+
+upon saving and closing the file, the interactive rebase will begin. Remember you can always abort at any time.
+
+```
+git rebase --continue
+```
 
 ### git reset
 
