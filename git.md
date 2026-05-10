@@ -527,13 +527,6 @@ git config --global --get-regexp alias
 
 ### git cherry-pick
 
-> note: generally, directly cherry-picking commits from remote branches should be avoided, and a merge should be done instead. This is because cherry-picking creates a new commit hash and git is unable to tell that the two different hashes are at all related. This can lead to unintended behavior with no merge conflicts. Only directly cherry-pick to grab commits from orphaned or stale branches. If you need a commit that someone else pushed to remote:
-> have the author create a separate branch from the base commit that their feature branch stems from: `git checkout <base-hash> && git checkout -b patch-branch`.
-> the author then cherry-picks the commit you need to the new branch: `git cherry-pick <hash>`.
-> the author pushes the branch to remote: `git add -A && commit -m "my message" && git push`.
-> the author merges the patch branch back to their feature branch (this will create an empty commit): `git switch feature-branch && git merge patch-branch`.
-> you merge in the patch branch: `git fetch origin && git merge origin/patch-branch`.
-
 to cherry pick a commit, switch to the branch that the commit will be added to and then run:
 
 ```
@@ -636,131 +629,20 @@ git update-index --no-assume-unchanged <directory-or-file-path>
 
 > note: to ignore _untracked_ files, add them to the `.git/info/exclude` file.
 
-## Advanced CLI Operations
-
-### View Common Ancestor Commit
-
-view the common ancestor commit between two branches (i.e. when a feature branch forked from main):
-
-find the common ancestor commit id:
-
-```
-git merge-base branch1 branch2
-```
-
-see commit details (including date, commit message, etc.):
-
-```
-git show <commit-id>
-```
-
-### Move Commits On Main To A New Branch
-
-if you accidentally made commits to main (but haven't pushed), then you can move those commits to a new feature branch (if you have only added one commit to main, consider using `git reset --soft HEAD~1` instead):
-
-find the commit hash of oldest accidental commit to main and copy it:
-
-```
-git log --oneline
-```
-
-create your feature branch off of that commit:
-
-```
-git branch <feature-branch-name> <commit-hash>
-```
-
-switch to the feature branch:
-
-```
-git switch <feature-branch-name>
-```
-
-For each commit after the oldest accidental commit, run git cherry-pick in order of the oldest commit to the newest (there is also a way to add commit ranges but this is less error-prone):
-
-```
-git cherry-pick <commit-hash>
-```
-
-switch back to main:
-
-```
-git switch main
-```
-
-reset main back N commits where N is the number of commits accidentally added to main (this cannot be undone):
-
-```
-git reset --hard HEAD~<N>
-```
-
-switch to the feature branch:
-
-```
-git switch <feature-branch-name>
-```
-
-### Continue Work on Pending Changes in PR
-
-when you start a new branch, sometimes you depend on changes that are currently on another branch that is stuck in a PR. You can use the initial branch's commits to develop off of and then cherry pick the new commits afterward to keep things clean:
-
-If branch FeatureA is stuck in a PR, create branch FeatureB off of branch FeatureA:
-
-```
-git switch FeatureA
-git pull
-git switch -c FeatureB
-```
-
-the following assumes that the PR for FeatureA has completed at this point. when finished making changes on branch FeatureB or whenever you'd like to resync main into FeatureB, pull latest:
-
-```
-git switch main
-git pull
-```
-
-create a new branch from main (this branch will eventually be the one to merge to main in the PR, so name it accordingly)
-
-```
-git switch -c FeatureB2
-```
-
-switch back to FeatureB:
-
-```
-git switch FeatureB
-```
-
-start an interactive rebase to add the new commits from FeatureB onto FeatureB2:
-
-```
-git rebase --interactive FeatureB2
-```
-
-this will open a text editor with a list of all the commits between `FeatureB` and `FeatureB2` (which currently shares a HEAD with `main`), something like this:
-
-```
-pick 1fc6c95 do something
-pick 6b2481b do something else
-pick dd1475d changed some things
-pick c619268 more changes
-```
-
-in the text editor, replace `pick` with `drop` for the commits you want to drop (the ones that have been included in the PR from FeatureA). it should look something like this:
-
-```
-drop 1fc6c95 do something
-drop 6b2481b do something else
-pick dd1475d changed some things
-pick c619268 more changes
-```
-
-save and close the editor. git will start the rebase, and will drop the commits where you replaced `pick` with `drop`. then, make a PR for `FeatureB2` into `main`.
-
 ## Helpful Extras
 
 - never rebase commits that have already been pushed.
+- view common ancestor commit: `git merge-base branch1 branch2` (note that this might not work if certain combinations of merging, rebasing, and cherry-picking occurred).
 - never use `git push --force` as it can rewrite history. However, if it is on your own personal feature branch then it is typically okay. A safer option is `git push --force-with-lease` which will fail if it will change someone else's commits.
+
+### Cherry Picking Strategy
+
+generally, directly cherry-picking commits from remote branches should be avoided, and a merge should be done instead. This is because cherry-picking creates a new commit hash and git is unable to tell that the two different hashes are related. This can lead to unintended behavior with no merge conflicts. Try to only cherry-pick commits from orphaned or stale branches. If you need a commit that someone else pushed to remote:
+- have the author create a separate branch from the base commit that their feature branch stems from: `git checkout <base-hash> && git checkout -b patch-branch`.
+- the author then cherry-picks the commit you need to the new branch: `git cherry-pick <hash>`.
+- the author pushes the branch to remote: `git add -A && commit -m "my message" && git push`.
+- the author merges the patch branch back to their feature branch (this will create an empty commit): `git switch feature-branch && git merge patch-branch`.
+- you merge in the patch branch: `git fetch origin && git merge origin/patch-branch`.
 
 ## Conventional Commits
 
