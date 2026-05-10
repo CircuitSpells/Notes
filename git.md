@@ -2,7 +2,7 @@
 
 ## Terminology
 
-- `HEAD`: most recent commit.
+- `HEAD`: a reference to the current commit that you are pointing to.
 - `Index`: staging area; what will be committed next.
 - `Working Tree`: your actual files on disk.
 
@@ -526,6 +526,13 @@ git config --global --get-regexp alias
 ```
 
 ### git cherry-pick
+
+> note: generally, directly cherry-picking commits from remote branches should be avoided, and a merge should be done instead. This is because cherry-picking creates a new commit hash and git is unable to tell that the two different hashes are at all related. This can lead to unintended behavior with no merge conflicts. Only directly cherry-pick to grab commits from orphaned or stale branches. If you need a commit that someone else pushed to remote:
+> have the author create a separate branch from the base commit that their feature branch stems from: `git checkout <base-hash> && git checkout -b patch-branch`.
+> the author then cherry-picks the commit you need to the new branch: `git cherry-pick <hash>`.
+> the author pushes the branch to remote: `git add -A && commit -m "my message" && git push`.
+> the author merges the patch branch back to their feature branch (this will create an empty commit): `git switch feature-branch && git merge patch-branch`.
+> you merge in the patch branch: `git fetch origin && git merge origin/patch-branch`.
 
 to cherry pick a commit, switch to the branch that the commit will be added to and then run:
 
