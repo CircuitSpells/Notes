@@ -1638,7 +1638,7 @@ helm show values bitnami/nginx --version=13.1.5 | grep replica # search for name
 
 helm install my-app bitnami/nginx --version=13.1.5 -n dev --set replicaCount=5 # override default replicaCount
 
-kubectl get pods -n devs # 5 pods created
+kubectl get pods -n dev # 5 pods created
 
 helm upgrade my-app bitnami/nginx --version=13.1.8 -n dev # upgrade to 13.1.8
 helm list -n dev # note the upgraded version number, and revision now equals 2
