@@ -69,6 +69,20 @@ verify origin was updated:
 git remote -vv
 ```
 
+make sure to set your email and name in the local git config:
+
+```
+git config user.email "<email>"
+git config user.name "<name>"
+```
+
+optionally set default pull and rebase behavior:
+
+```
+git config --global pull.rebase true
+git config --global rebase.autoStash true
+```
+
 you can now do git operations on the remote branch! Repeat this process for any additional GitHub accounts you need access to.
 
 ## Basic CLI Operations
@@ -372,6 +386,7 @@ git diff <main-branch>..<feature-branch>
 ```
 
 or if you're already on the feature branch, simply:
+
 ```
 git diff main
 ```
@@ -513,6 +528,7 @@ this will open an interactive session to replay the previous N commits, allowing
 - `drop`: remove the commit.
 
 you can also add `exec` inbetween commits:
+
 - `exec`: run a shell command, e.g. `exec npm test`.
 
 upon saving and closing the file, the interactive rebase will begin. Remember you can always abort at any time.
@@ -681,7 +697,7 @@ delete all stashes:
 git stash clear
 ```
 
-retrieve dropped stash: https://stackoverflow.com/questions/65182172/visual-studio-undo-drop-stash
+retrieve dropped stash: <https://stackoverflow.com/questions/65182172/visual-studio-undo-drop-stash>
 
 ### git clean
 
@@ -725,6 +741,7 @@ git update-index --no-assume-unchanged <directory-or-file-path>
 - view common ancestor commit: `git merge-base branch1 branch2` (note that this might not work if certain combinations of merging, rebasing, and cherry-picking occurred).
 - never use `git push --force` as it can rewrite history. However, if it is on your own personal feature branch then it is typically okay. A safer option is `git push --force-with-lease` which will fail if it will change someone else's commits.
 - to add a local repo to GitHub (requires the gh CLI and first running `gh auth login`):
+
 ```
 gh repo create --private --source=. --remote=origin
 git push -u --all
@@ -734,6 +751,7 @@ gh browse
 ### Cherry Picking Strategy
 
 generally, directly cherry-picking commits from remote branches should be avoided, and a merge should be done instead. This is because cherry-picking creates a new commit hash and git is unable to tell that the two different hashes are related. This can lead to unintended behavior with no merge conflicts. Try to only cherry-pick commits from orphaned or stale branches. If you need a commit that someone else pushed to remote:
+
 - have the author create a separate branch from the base commit that their feature branch stems from: `git checkout <base-hash> && git checkout -b patch-branch`.
 - the author then cherry-picks the commit you need to the new branch: `git cherry-pick <hash>`.
 - the author pushes the branch to remote: `git add -A && commit -m "my message" && git push`.
@@ -763,4 +781,3 @@ commit elements:
 3. `BREAKING CHANGE:` _is placed at the beginning of the optional body_, and correlates with MAJOR in semantic versioning. This can be added to a commit of any type.
 
 4. Others: `chore:`, `docs:`, `style:`, `refactor:`, `perf:`, `test:`, and others. A scope may be provided to a commit’s type, e.g., `feat(parser): add ability to parse arrays`.
-
