@@ -106,7 +106,7 @@ git switch <branch-name>
 create a new branch based on the current branch:
 
 ```
-git switch -c <new-branch-name>
+git switch -c <branch-name>
 ```
 
 switch to a branch that only exists on origin:
@@ -114,6 +114,12 @@ switch to a branch that only exists on origin:
 ```
 git fetch
 git switch -c <local-branch-name> --track origin/<branch-name>
+```
+
+create a new branch directly from upstream main (as opposed to local main):
+
+```
+git switch -c <branch-name> upstream/main
 ```
 
 switch to a commit:
