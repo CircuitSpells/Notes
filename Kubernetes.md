@@ -866,7 +866,7 @@ spec:
         - containerPort: 8080
 ```
 
-note that the `initContainers` is an array whose containers will spun/down in the order that they are defined in.
+note that `initContainers` is an array whose containers will spin up/down in the order that they are defined in. The next container does not spin up until the previous one returns a successful exit (`exit code 0`).
 
 sidecar pattern:
 
