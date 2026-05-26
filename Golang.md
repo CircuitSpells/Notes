@@ -275,3 +275,80 @@ for key := range collection { ... }
 for _, value := range collection { ... }
 ```
 
+## Functions
+
+```go
+func greet(name string, name2 string) {
+  // ...
+}
+
+// the above is equivalent to:
+func greet(name, name2 string) {
+  // ...
+}
+```
+
+variadic parameters allow for passing numerous instances of a single data type:
+
+```go
+func greet(names ...string) { // received as a slice
+  for _, n := range names {
+    fmt.Println(n)
+  }
+}
+```
+
+note that variadic parameters:
+
+- are received as a slice.
+- can only be used once in a given function.
+- must be the final parameter.
+
+go does not support:
+
+- setting default values.
+- specifying optional parameters.
+- function overloading.
+
+pass by value vs pass by reference:
+
+```go
+func myFunc(name string, otherName *string) {
+  name = "new name" // passed by value (a copy of the input variable)
+  *otherName = "other new name" // passed by reference (the input variable itself)
+}
+```
+
+function that returns a single value:
+
+```go
+func add(l, r int) int {
+  return l + r
+}
+```
+
+function that returns multiple values:
+
+```go
+func divide(l, r int) (int, bool) { // note the parenthesis around the return values
+  if r == 0 {
+    return 0, false
+  }
+  return l / r, true
+}
+```
+
+named return values:
+
+```go
+func divide(l, r int) (result int, ok bool) { // note the parenthesis around the return values
+  if r == 0 {
+    return 0, false
+  }
+  result = l / r
+  ok = true
+  return // an option, but typically not recommended since it requires hunting for return values
+  // better to use: return l / r, true
+}
+```
+
