@@ -79,6 +79,8 @@ const f = 2 * 5 // constant expression (determined at compile-time; no dynamic b
 
 ### Arrays
 
+an array is a fixed-size collection of the same type.
+
 ```go
 var arr [3]int // initialized to its "zero value"
 fmt.Println(arr) // [0, 0, 0]
@@ -137,7 +139,10 @@ maps are hashtables (key/val pairs).
 ```go
 var m map[string]int
 fmt.Println(m) // map[] (nil)
-m = map[string]int{"foo": 1, "bar": 2}
+m = map[string]int{
+  "foo": 1,
+  "bar": 2, // note the comma on the last item (arrays and slices require this as well)
+}
 
 fmt.Println(m["foo"]) // 1
 m["bar"] = 99
@@ -154,4 +159,119 @@ fmt.Println(v, ok) // 0, false
 ```
 
 ### Structs
+
+a struct is a fixed-size collection (like arrays) of varying types.
+
+```go
+var s struct{ // declare an anonymous struct
+  name string
+  id int
+}
+
+// structs are value types:
+fmt.Println(s) // {"" 0}
+
+s.name = "Alice"
+
+// it is common to use types to represent the struct:
+type myStruct struct{
+  name string
+  id int
+}
+
+var s myStruct // declare variable with custom type
+s = myStruct{
+  name: "Bob",
+  id: 42,
+}
+s2 := s
+
+// because structs are value types, they are comparable:
+s == s2 // true (go checks for the same fields _and_ the same field order)
+```
+
+slice of structs:
+
+```go
+type score struct {
+  name string
+  score int
+}
+
+scores := []score{
+  {name: "Alice", score: 87},
+  {name: "Bob", score: 96},
+  {name: "Carol", score: 64},
+}
+```
+
+## Branches
+
+if statement:
+
+```go
+if test { ... }
+else if { ... }
+else { ... }
+
+if initializer; test { ... }
+```
+
+switch statement:
+
+```go
+i := 999
+switch i {
+  case 1:
+    // ...
+  case 2, 3:
+    // ...
+  default:
+    // ...
+}
+
+// or use initializer syntax:
+switch i := 999; i {
+  case 1:
+  // ...
+}
+```
+
+## Loops
+
+all loops are for loops in Go:
+
+```go
+for { ... } // infinite loop
+
+for condition { ... } // loop until
+// e.g.:
+i := 1
+for i < 3 {
+  i += 1
+}
+
+for initializer; test; post clause { ... } // counter-based loop
+// e.g.:
+for i := 1; i < 3; i++ {
+  // ...
+}
+```
+
+looping over collections:
+
+```go
+for key, value := range collection { ... } // able to loop over arrays, slices, and maps
+// e.g.:
+arr := [3]int{1, 2, 3}
+for i, val := range arr {
+  fmt.Println(i, val) // print index and value
+}
+
+// if you don't need the values:
+for key := range collection { ... }
+
+// if you don't need the keys:
+for _, value := range collection { ... }
+```
 
