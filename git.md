@@ -521,6 +521,12 @@ interactive rebase for the past N commits:
 git rebase --interactive HEAD~<N>
 ```
 
+or, rebase all new commits on feature branch:
+
+```
+git rebase -i main
+```
+
 > note: before doing a complicated interactive rebase, consider backing up your branch first with `git branch <branch-name>-bak`.
 
 this will open an interactive session to replay the previous N commits, allowing you to make modifications by replacing "pick" with other keywords:
@@ -540,9 +546,26 @@ you can also add `exec` inbetween commits:
 
 upon saving and closing the file, the interactive rebase will begin. Remember you can always abort at any time.
 
+many of the above commands will continue automatically, but you need you can continue manually:
+
 ```
 git rebase --continue
 ```
+
+to collapse all commits on a feature branch into a single commit:
+
+```
+git switch <feature-branch>
+git rebase -i main
+```
+
+then:
+
+- leave oldest commit as "pick"
+- change all others to "squash"
+- save and close the file
+- you will be prompted to edit the commit message. Optionally do so and then save and close the file.
+- if something goes wrong
 
 ### git reset
 
