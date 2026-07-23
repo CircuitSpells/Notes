@@ -565,7 +565,6 @@ then:
 - change all others to "squash"
 - save and close the file
 - you will be prompted to edit the commit message. Optionally do so and then save and close the file.
-- if something goes wrong
 
 ### git reset
 
