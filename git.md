@@ -607,6 +607,14 @@ git revert <commit-hash> --no-edit
 git push
 ```
 
+undo a merge commit:
+
+```
+git revert -m 1 <commit-hash> --no-edit
+```
+
+> `--no-edit` prevents the editor from opening and takes the default commit message. `-m 1` tells git to revert to the first parent (typically main).
+
 ### git config
 
 get current git username:
