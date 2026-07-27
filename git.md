@@ -129,6 +129,12 @@ switch to a commit:
 git switch --detach <commit-hash>
 ```
 
+switch to previous branch:
+
+```
+git switch -
+```
+
 ### git fetch
 
 pull a branch from origin without switching to it (note that this will not set the upstream branch--this needs to be manually):
