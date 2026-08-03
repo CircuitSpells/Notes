@@ -82,6 +82,7 @@ optionally set default pull, rebase, and push behavior:
 git config --global pull.rebase true
 git config --global rebase.autoStash true
 git config --global push.autoSetupRemote true
+git config --global checkout.guess false
 ```
 
 you can now do git operations on the remote branch! Repeat this process for any additional GitHub accounts you need access to.
