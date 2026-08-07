@@ -57,19 +57,31 @@ ssh -T git@<the-hostname-you-chose>
 
 when prompted to continue connecting, type `yes` and enter. You should get a message saying you've successfully authenticated, but GitHub does not provide shell access.
 
-go to your repo directory and update the origin url:
+to clone a new repo:
+
+```
+git clone git@<the-hostname-you-chose>:<github-username>/<repo-name>.git
+```
+
+or to update an existing repo:
 
 ```
 git remote set-url origin git@<the-hostname-you-chose>:<github-username>/<repo-name>.git
 ```
 
-verify origin was updated:
+to add an upstream repo (https is fine for fetch/pull access):
+
+```
+git remote add upstream https://github.com/<github-username>/<repo-name>.git
+```
+
+verify origin and upstream remotes are present:
 
 ```
 git remote -vv
 ```
 
-make sure to set your email and name in the local git config:
+make sure to set your email and name in the local git config if separate than what is present in your global config:
 
 ```
 git config user.email "<email>"
@@ -83,6 +95,12 @@ git config --global pull.rebase true
 git config --global rebase.autoStash true
 git config --global push.autoSetupRemote true
 git config --global checkout.guess false
+```
+
+finally, create a new branch directly from upstream:
+
+```
+git switch -c <branch-name> upstream/main
 ```
 
 you can now do git operations on the remote branch! Repeat this process for any additional GitHub accounts you need access to.
