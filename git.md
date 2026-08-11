@@ -88,7 +88,7 @@ git config user.email "<email>"
 git config user.name "<name>"
 ```
 
-optionally set default pull, rebase, and push behavior:
+optionally set default git behavior:
 
 ```
 git config --global pull.rebase true
