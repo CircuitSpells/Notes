@@ -12,7 +12,7 @@ to set up GitHub auth on a Linux machine:
 
 generate an ssh token:
 
-```
+```sh
 ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519_<some-name-you-choose> -C "<email>"
 ```
 
@@ -22,7 +22,7 @@ you will be prompted for an optional passphrase. This will be required for every
 
 start ssh agent and add token:
 
-```
+```sh
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_ed25519_<the-name-you-chose>
 ```
@@ -51,7 +51,7 @@ Host <a-hostname-you-choose>
 
 add the identity to known-hosts:
 
-```
+```sh
 ssh -T git@<the-hostname-you-chose>
 ```
 
@@ -59,38 +59,38 @@ when prompted to continue connecting, type `yes` and enter. You should get a mes
 
 to clone a new repo:
 
-```
+```sh
 git clone git@<the-hostname-you-chose>:<github-username>/<repo-name>.git
 ```
 
 or to update an existing repo:
 
-```
+```sh
 git remote set-url origin git@<the-hostname-you-chose>:<github-username>/<repo-name>.git
 ```
 
 to add an upstream repo (https is fine for fetch/pull access):
 
-```
+```sh
 git remote add upstream https://github.com/<github-username>/<repo-name>.git
 ```
 
 verify origin and upstream remotes are present:
 
-```
+```sh
 git remote -vv
 ```
 
 make sure to set your email and name in the local git config if separate than what is present in your global config:
 
-```
+```sh
 git config user.email "<email>"
 git config user.name "<name>"
 ```
 
 optionally set default git behavior:
 
-```
+```sh
 git config --global pull.rebase true
 git config --global rebase.autoStash true
 git config --global push.autoSetupRemote true
@@ -99,7 +99,7 @@ git config --global checkout.guess false
 
 finally, create a new branch directly from upstream:
 
-```
+```sh
 git switch -c <branch-name> upstream/main
 ```
 
@@ -111,7 +111,7 @@ you can now do git operations on the remote branch! Repeat this process for any 
 
 start a new local repo:
 
-```
+```sh
 git init
 ```
 
@@ -119,38 +119,38 @@ git init
 
 switch to existing branch:
 
-```
+```sh
 git switch <branch-name>
 ```
 
 create a new branch based on the current branch:
 
-```
+```sh
 git switch -c <branch-name>
 ```
 
 switch to a branch that only exists on origin:
 
-```
+```sh
 git fetch
 git switch -c <local-branch-name> --track origin/<branch-name>
 ```
 
 create a new branch directly from upstream main (as opposed to local main):
 
-```
+```sh
 git switch -c <branch-name> upstream/main
 ```
 
 switch to a commit:
 
-```
+```sh
 git switch --detach <commit-hash>
 ```
 
 switch to previous branch:
 
-```
+```sh
 git switch -
 ```
 
@@ -158,13 +158,13 @@ git switch -
 
 pull a branch from origin without switching to it (note that this will not set the upstream branch--this needs to be manually):
 
-```
+```sh
 git fetch origin <origin-branch-name>:<local-branch-name>
 ```
 
 > e.g.
 >
-> ```
+> ```sh
 > git fetch origin myBranch:myBranch
 > ```
 
@@ -172,7 +172,7 @@ git fetch origin <origin-branch-name>:<local-branch-name>
 
 pull a branch from origin, switch to it, and automatically set its upstream branch:
 
-```
+```sh
 git checkout --track origin/<branch-name>
 ```
 
@@ -180,13 +180,13 @@ git checkout --track origin/<branch-name>
 
 stage files:
 
-```
+```sh
 git add <directory-or-file-path>
 ```
 
 stage multiple files:
 
-```
+```sh
 git add <file1> <file2> <file3>
 ```
 
@@ -194,19 +194,19 @@ git add <file1> <file2> <file3>
 
 unstage files:
 
-```
+```sh
 git restore --staged <directory-or-file-path>
 ```
 
 reset files to match the last commit (discard changes):
 
-```
+```sh
 git restore <directory-or-file-path>
 ```
 
 reset files to match the main branch:
 
-```
+```sh
 git restore --source <main-branch> <directory-or-file-path>
 ```
 
@@ -214,7 +214,7 @@ git restore --source <main-branch> <directory-or-file-path>
 
 see tracked/untracked and staged/unstaged files, and see upstream branch:
 
-```
+```sh
 git status
 ```
 
@@ -224,19 +224,19 @@ git status
 
 commit staged files to local branch:
 
-```
+```sh
 git commit -m "commit message"
 ```
 
 amend last commit (apply staged changes to most recent commit):
 
-```
+```sh
 git commit --amend
 ```
 
 edit last commit message:
 
-```
+```sh
 git commit --ammend -m "new commit message"
 ```
 
@@ -248,13 +248,13 @@ git commit --ammend -m "new commit message"
 
 push to local branch:
 
-```
+```sh
 git push
 ```
 
 push current branch and set remote as upstream:
 
-```
+```sh
 git push --set-upstream origin <branch-name>
 ```
 
@@ -262,13 +262,13 @@ git push --set-upstream origin <branch-name>
 
 pull remote changes into your local branch:
 
-```
+```sh
 git pull
 ```
 
 pull changes from a remote branch (such as an upstream fork):
 
-```
+```sh
 git pull <remote-name> <branch-name>
 # e.g.
 # git pull upstream main
@@ -276,19 +276,19 @@ git pull <remote-name> <branch-name>
 
 rebase local commits on top of pull (instead of creating a merge commit, allows for cleaner git history):
 
-```
+```sh
 git pull --rebase
 ```
 
 auto stash local changes, then reapply them after the rebase (merge conflicts will need to be resolved manually):
 
-```
+```sh
 git pull --rebase --autostash
 ```
 
 set the above as the default behavior globally:
 
-```
+```sh
 git config --global pull.rebase true
 git config --global rebase.autoStash true
 ```
@@ -297,49 +297,49 @@ git config --global rebase.autoStash true
 
 view local branches:
 
-```
+```sh
 git branch
 ```
 
 view remote branches:
 
-```
+```sh
 git branch -r
 ```
 
 view local and remote branches:
 
-```
+```sh
 git branch -a
 ```
 
 create a new branch without switching to it:
 
-```
+```sh
 git branch <branch-name>
 ```
 
 delete local branch that has not been pushed to remote (`-D` is short for `--delete --force`):
 
-```
+```sh
 git branch -D <branch-name>
 ```
 
 delete local branch that has been pushed to remote:
 
-```
+```sh
 git branch -d <branch-name>
 ```
 
 see which local branches are tracking a remote branch:
 
-```
+```sh
 git branch -vv
 ```
 
 see which branches contain a specific commit:
 
-```
+```sh
 git branch --contains <commit-hash>
 ```
 
@@ -349,19 +349,19 @@ git branch --contains <commit-hash>
 
 view remote origin and upstream branch:
 
-```
+```sh
 git remote -vv
 ```
 
 set origin repo (should be set automatically when you clone):
 
-```
+```sh
 git remote set-url origin https://github.com/<github-username>/<repo-name>.git
 ```
 
 set upstream repo (to pull updates from a fork):
 
-```
+```sh
 git remote add upstream https://github.com/<github-username>/<repo-name>.git
 ```
 
@@ -371,73 +371,73 @@ git remote add upstream https://github.com/<github-username>/<repo-name>.git
 
 view diff of working tree relative to index (staging area):
 
-```
+```sh
 git diff
 ```
 
 view diff of index relative to HEAD:
 
-```
+```sh
 git diff --staged
 ```
 
 view diff of working tree + index (i.e. all uncommitted changes) relative to HEAD:
 
-```
+```sh
 git diff HEAD
 ```
 
 view diff of current commit relative to the past N commits on the current branch:
 
-```
+```sh
 git diff HEAD~<N>
 ```
 
 view diff of working tree + index (i.e. all uncommitted changes) relative to main:
 
-```
+```sh
 git diff main
 ```
 
 view diff of a file:
 
-```
+```sh
 git diff <path-to-file>
 ```
 
 view diff files in the current directory:
 
-```
+```sh
 git diff .
 ```
 
 diff between the tip of main and HEAD of a feature branch:
 
-```
+```sh
 git diff <main-branch>..<feature-branch>
 ```
 
 or if you're already on the feature branch, simply:
 
-```
+```sh
 git diff main
 ```
 
 diff between main and your feature branch (specify path):
 
-```
+```sh
 git diff <main-branch>..<feature-branch> -- <directory-or-file-path>
 ```
 
 diff between the tip of your feature branch and the base commit on main where the feature branch had branched from (note the three dots `...`):
 
-```
+```sh
 git diff <main-branch>...<feature-branch>
 ```
 
 same as above but also specify path:
 
-```
+```sh
 git diff <main-branch>...<feature-branch> -- <directory-or-file-path>
 ```
 
@@ -445,47 +445,47 @@ git diff <main-branch>...<feature-branch> -- <directory-or-file-path>
 
 see recent commits:
 
-```
+```sh
 git log
 ```
 
 see a compact view of recent commits:
 
-```
+```sh
 git log --oneline
 ```
 
 see commit graph:
 
-```
+```sh
 git log --graph --decorate --oneline
 ```
 
 see the commit history of a file:
 
-```
+```sh
 git log -- <file-name>
 ```
 
 see all commits filtered by path:
 
-```
+```sh
 git log -- <directory-path>
 ```
 
 view all commits since the feature branch branched from main (or between two commits on the same branch):
 
-```
+```sh
 git log <main-branch>..<feature-branch>
 ```
 
-```
+```sh
 git log <start-commit>..<end-commit>
 ```
 
 search commits that contain a commit message (useful with conventional commits), such as "feat:":
 
-```
+```sh
 git log --grep='^feat:' --since="1 month ago" --oneline --regexp-ignore-case
 ```
 
@@ -493,7 +493,7 @@ git log --grep='^feat:' --since="1 month ago" --oneline --regexp-ignore-case
 
 show what changed in a specific commit:
 
-```
+```sh
 git show <commit-id>
 ```
 
@@ -501,7 +501,7 @@ git show <commit-id>
 
 merge branchB into branchA:
 
-```
+```sh
 git switch branchA
 git pull
 git merge branchB --no-edit
@@ -511,7 +511,7 @@ git merge branchB --no-edit
 
 > or, optionally:
 >
-> ```
+> ```sh
 > git merge --squash branchB
 > ```
 
@@ -519,7 +519,7 @@ git merge branchB --no-edit
 
 rebase a feature branch onto main:
 
-```
+```sh
 git switch main && git pull
 
 git switch <feature-branch>
@@ -534,7 +534,7 @@ git merge <feature-branch>
 
 if there are conflicts, you can abort with:
 
-```
+```sh
 git rebase --abort
 ```
 
@@ -542,13 +542,13 @@ git rebase --abort
 
 interactive rebase for the past N commits:
 
-```
+```sh
 git rebase --interactive HEAD~<N>
 ```
 
 or, rebase all new commits on feature branch:
 
-```
+```sh
 git rebase -i main
 ```
 
@@ -573,13 +573,13 @@ upon saving and closing the file, the interactive rebase will begin. Remember yo
 
 many of the above commands will continue automatically, but you need you can continue manually:
 
-```
+```sh
 git rebase --continue
 ```
 
 to collapse all commits on a feature branch into a single commit:
 
-```
+```sh
 git switch <feature-branch>
 git rebase -i main
 ```
@@ -595,31 +595,31 @@ then:
 
 abort a merge in progress and permanently remove all uncommitted changes:
 
-```
+```sh
 git reset --hard HEAD
 ```
 
 undo and delete the last N commits:
 
-```
+```sh
 git reset --hard HEAD~<N>
 ```
 
 > where N is the number of commits, e.g.:
 >
-> ```
+> ```sh
 > git reset --hard HEAD~1
 > ```
 
 undo the last N commits, but keep the changes from the undone commits in the staging area (use this if you accidentally commit to main):
 
-```
+```sh
 git reset --soft HEAD~<N>
 ```
 
 > where N is the number of commits, e.g.:
 >
-> ```
+> ```sh
 > git reset --soft HEAD~1
 > ```
 
@@ -627,14 +627,14 @@ git reset --soft HEAD~<N>
 
 undo a commit from origin and add that undo as a new commit:
 
-```
+```sh
 git revert <commit-hash> --no-edit
 git push
 ```
 
 undo a merge commit:
 
-```
+```sh
 git revert -m 1 <commit-hash> --no-edit
 ```
 
@@ -644,43 +644,43 @@ git revert -m 1 <commit-hash> --no-edit
 
 get current git username:
 
-```
+```sh
 git config --get user.email
 ```
 
 get current git email:
 
-```
+```sh
 git config --get user.name
 ```
 
 set local git username:
 
-```
+```sh
 git config user.email "your.email@example.com"
 ```
 
 set local git email:
 
-```
+```sh
 git config user.name "Your Name"
 ```
 
 set pruning to true (remove tracking to branches that have been deleted on origin):
 
-```
+```sh
 git config remote.origin.prune true
 ```
 
 set an alias
 
-```
+```sh
 git config --global alias.<alias-name> '<git-command>'
 ```
 
 > alias to create a shorthand for 'git status', e.g.:
 >
-> ```
+> ```sh
 > git config --global alias.gs 'status'
 > git gs
 > ```
@@ -689,7 +689,7 @@ git config --global alias.<alias-name> '<git-command>'
 
 view aliases
 
-```
+```sh
 git config --global --get-regexp alias
 ```
 
@@ -697,13 +697,13 @@ git config --global --get-regexp alias
 
 to cherry pick a commit, switch to the branch that the commit will be added to and then run:
 
-```
+```sh
 git cherry-pick <commit-hash>
 ```
 
 cherry pick a range of commits:
 
-```
+```sh
 git cherry-pick <start-commit-hash>^..<end-commit-hash>
 ```
 
@@ -711,7 +711,7 @@ git cherry-pick <start-commit-hash>^..<end-commit-hash>
 
 if the cherry-pick has merge conflicts, you can resolve them in a text editor or abort the changes:
 
-```
+```sh
 git cherry-pick --abort
 ```
 
@@ -719,49 +719,49 @@ git cherry-pick --abort
 
 stash tracked/untracked, staged/unstaged files. All files will be stashed as unstaged (message is optional):
 
-```
+```sh
 git stash -u -m "my message"
 ```
 
 stash tracked/untracked but don't stash staged (message is optional):
 
-```
+```sh
 git stash push -u --keep-index -m "my message"
 ```
 
 stash select files:
 
-```
+```sh
 git stash push path/to/file.txt
 ```
 
 list stashes:
 
-```
+```sh
 git stash list
 ```
 
 view stash contents (omit stash name to view most recent stash `stash@{0}`):
 
-```
+```sh
 git stash show -p "stash@{2}"
 ```
 
 apply a specific stash by index (omit stash name to apply most recent stash `stash@{0}`):
 
-```
-git stash apply stash@{2}
+```sh
+git hstash apply stash@{2}
 ```
 
 delete stash (omit stash name to delete most recent stash `stash@{0}`):
 
-```
+```sh
 git stash drop "stash@{2}"
 ```
 
 delete all stashes:
 
-```
+```sh
 git stash clear
 ```
 
@@ -771,13 +771,13 @@ retrieve dropped stash: <https://stackoverflow.com/questions/65182172/visual-stu
 
 print out list of files and directories which will be removed without removing them:
 
-```
+```sh
 git clean -d --dry-run
 ```
 
 delete files that are not under version control:
 
-```
+```sh
 git clean -fd
 ```
 
@@ -785,19 +785,19 @@ git clean -fd
 
 hide local edits to _tracked_ files (essentially your own personal .gitignore):
 
-```
+```sh
 git update-index --assume-unchanged <directory-or-file-path>
 ```
 
 > note: to see which files are no longer being tracked due to --assume-unchanged, run the following:
 >
-> ```
+> ```sh
 > git ls-files -v | Select-String '^h' -CaseSensitive
 > ```
 
 to undo the `--assume-unchanged` command:
 
-```
+```sh
 git update-index --no-assume-unchanged <directory-or-file-path>
 ```
 
@@ -810,7 +810,7 @@ git update-index --no-assume-unchanged <directory-or-file-path>
 - never use `git push --force` as it can rewrite history. However, if it is on your own personal feature branch then it is typically okay. A safer option is `git push --force-with-lease` which will fail if it will change someone else's commits.
 - to add a local repo to GitHub (requires the gh CLI and first running `gh auth login`):
 
-```
+```sh
 gh repo create --private --source=. --remote=origin
 git push -u --all
 gh browse
