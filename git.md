@@ -729,6 +729,12 @@ stash tracked/untracked but don't stash staged (message is optional):
 git stash push -u --keep-index -m "my message"
 ```
 
+stash select files:
+
+```
+git stash push path/to/file.txt
+```
+
 list stashes:
 
 ```
